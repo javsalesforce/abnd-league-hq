@@ -1,0 +1,3391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ABND Fantasy Football League HQ & Arcade</title>
+
+  <!-- Google Fonts: Bangers & Fredoka for bold retro-comic sports broadcast aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0f172a',
+            electricNavy: '#172554',
+            varsityGold: '#facc15',
+            crimson: '#dc2626',
+            comicPaper: '#fef9e7',
+            comicCard: '#fffdf5',
+            turf: '#16a34a'
+          },
+          fontFamily: {
+            comic: ['Bangers', 'cursive'],
+            body: ['Fredoka', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --navy: #0f172a;
+      --electric-navy: #1e3a8a;
+      --varsity-gold: #facc15;
+      --crimson: #dc2626;
+      --comic-paper: #fef9e7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0b132b;
+      color: #0f172a;
+      font-family: 'Fredoka', sans-serif;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(rgba(250, 204, 21, 0.14) 2px, transparent 2px),
+        radial-gradient(rgba(59, 130, 246, 0.12) 2px, transparent 2px);
+      background-size: 28px 28px;
+      background-position: 0 0, 14px 14px;
+    }
+
+    /* Thick Black Ink Borders & Hard Drop Shadows */
+    .comic-box {
+      background-color: #fffdf5;
+      border: 4px solid #000000;
+      box-shadow: 7px 7px 0px #000000;
+      border-radius: 16px;
+      position: relative;
+    }
+
+    .comic-box-navy {
+      background-color: #172554;
+      color: #ffffff;
+      border: 4px solid #000000;
+      box-shadow: 7px 7px 0px #000000;
+      border-radius: 16px;
+      position: relative;
+    }
+
+    .comic-btn {
+      border: 3px solid #000000;
+      box-shadow: 4px 4px 0px #000000;
+      border-radius: 12px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.12s ease;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .comic-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 5px 5px 0px #000000;
+      filter: brightness(1.05);
+    }
+
+    .comic-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+
+    .comic-heading {
+      font-family: 'Bangers', cursive;
+      letter-spacing: 0.05em;
+      text-shadow: 3px 3px 0px #000000;
+    }
+
+    .comic-heading-sm {
+      font-family: 'Bangers', cursive;
+      letter-spacing: 0.04em;
+      text-shadow: 2px 2px 0px #000000;
+    }
+
+    .halftone-bg {
+      background-image: radial-gradient(rgba(0, 0, 0, 0.12) 1.5px, transparent 1.5px);
+      background-size: 9px 9px;
+    }
+
+    /* Live Ticker */
+    .ticker-wrap {
+      overflow: hidden;
+      white-space: nowrap;
+      border-bottom: 4px solid #000000;
+    }
+
+    .ticker-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 3rem;
+      padding-left: 100%;
+      animation: ticker-scroll 48s linear infinite;
+    }
+
+    .ticker-wrap:hover .ticker-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(1.3); }
+    }
+    .live-dot {
+      animation: pulse-dot 1.3s infinite;
+    }
+
+    /* Hold the Camera Steady for Dad! Violent Camera Shake */
+    @keyframes dad-cam-shake {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+      10%  { transform: translate(-11px, -7px) rotate(-4.5deg) scale(1.04); }
+      20%  { transform: translate(12px, 8px) rotate(5deg) scale(0.96); }
+      30%  { transform: translate(-13px, 5px) rotate(-5.5deg) scale(1.05); }
+      40%  { transform: translate(10px, -10px) rotate(4deg) scale(0.97); }
+      50%  { transform: translate(-9px, 11px) rotate(-5deg) scale(1.04); }
+      60%  { transform: translate(13px, -5px) rotate(5.5deg) scale(0.95); }
+      70%  { transform: translate(-10px, -9px) rotate(-3.5deg) scale(1.04); }
+      80%  { transform: translate(9px, 9px) rotate(4.5deg) scale(0.97); }
+      90%  { transform: translate(-7px, -5px) rotate(-2.5deg) scale(1.02); }
+      100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    }
+    .shaking-cam {
+      animation: dad-cam-shake 0.3s linear infinite;
+    }
+
+    /* Rocky Montage Bounce */
+    @keyframes rocky-bounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-6px) scale(1.03); }
+    }
+    .rocky-pumping {
+      animation: rocky-bounce 0.42s ease-in-out infinite;
+    }
+
+    /* Responsive Arcade Canvas Container */
+    .arcade-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      min-height: 360px;
+      max-height: 580px;
+      border: 4px solid #000000;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0f172a;
+      box-shadow: 6px 6px 0px #000000;
+      touch-action: none;
+    }
+
+    @media (max-width: 640px) {
+      .arcade-stage {
+        aspect-ratio: 4 / 5;
+        min-height: 410px;
+        max-height: 530px;
+      }
+    }
+
+    .arcade-stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    /* Custom Toast Notification */
+    #toast-area {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast-card {
+      pointer-events: auto;
+      animation: popToast 0.22s ease-out;
+    }
+    @keyframes popToast {
+      from { opacity: 0; transform: translateY(14px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ==================== BREAKING SPORTS TICKER ==================== -->
+  <div class="ticker-wrap bg-crimson text-white py-2 text-sm sm:text-base font-bold select-none">
+    <div class="flex items-center">
+      <div class="z-10 bg-varsityGold text-black font-comic text-xl px-3 py-0.5 ml-2 mr-2 rounded-lg border-3 border-black shadow-[3px_3px_0_#000] shrink-0 flex items-center gap-1.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-crimson inline-block live-dot border border-black"></span>
+        ABND LIVE WIRE
+      </div>
+      <div class="overflow-hidden flex-1">
+        <div class="ticker-track">
+          <span>🇮🇹 #1 SEED ALERT: Tony (Italy America FC) waves the Italian tricolor atop the ABND Measuring Stick!</span>
+          <span>🧇 WAFFLE STOMP WATCH: Bryan spotted crushing a giant golden waffle in his grey zip hoodie!</span>
+          <span>🐼 RAGING PANDAS: Kevin rides his giant panda into the top half of the standings in his Red Wings cap!</span>
+          <span>🚽 TOILET BOWL DIVE: Danny (Kimbo slice) slides headfirst in his martial arts gi — someone pull the handle!</span>
+          <span>⚔️ NASHTY BOWL FEUD: Matt (Tuten in Boston's Fields) vs. Kyle (Horseshoe) brotherly war heats up!</span>
+          <span>🤷‍♂️ MANNY UPDATE: Manny responds to every trade proposal with an elite double-hand shrug!</span>
+          <span>🪧 HONESTY AWARD: Seth (ISuck@FF) proudly holds up his cardboard confession sign!</span>
+          <span>🏖️ BYE WEEK ENERGY: Jason kicks back in his lawn chair refusing to check his roster!</span>
+          <span>🏆 MIKE'S MOTTO: "I used to be a champion!" — Play both Mike arcade games below!</span>
+          <span>🎥 DAD CAM: "Come on Michael! Hold the camera steady for Dad!"</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BROADCAST HEADER & NAVIGATION ==================== -->
+  <header class="sticky top-0 z-40 bg-[#0f172a] border-b-4 border-black shadow-xl">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('hq')">
+          <div class="w-12 h-12 rounded-xl bg-varsityGold border-3 border-black shadow-[3px_3px_0_#000] flex items-center justify-center shrink-0">
+            <span class="font-comic text-3xl text-black leading-none">AB</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-comic text-3xl sm:text-4xl text-varsityGold comic-heading leading-none">ABND FANTASY FOOTBALL</h1>
+              <span class="hidden sm:inline-block bg-crimson text-white font-bold text-xs px-2 py-0.5 rounded-md border-2 border-black">HQ &amp; ARCADE</span>
+            </div>
+            <p class="text-xs text-slate-300 font-semibold tracking-wide">Sleeper League ID: <span class="text-varsityGold font-bold">1357786733483151360</span> • Official Broadcast Center</p>
+          </div>
+        </div>
+
+        <!-- Live API Pill & SFX Button -->
+        <div class="flex items-center gap-2 ml-auto sm:ml-0">
+          <div id="api-pill" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-electricNavy text-white border-3 border-black text-xs font-bold shadow-[3px_3px_0_#000]">
+            <span id="api-dot" class="w-2.5 h-2.5 rounded-full bg-varsityGold live-dot"></span>
+            <span id="api-text" class="hidden md:inline">SYNCING SLEEPER...</span>
+            <span id="api-text-short" class="md:hidden">SYNC</span>
+            <button onclick="fetchSleeperData(true)" title="Refresh Sleeper Data" class="ml-1 p-1 rounded-lg bg-varsityGold text-black border-2 border-black hover:scale-105 transition-transform">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+
+          <button id="sfx-btn" onclick="toggleSound()" class="comic-btn px-3 py-1.5 bg-varsityGold text-black font-bold text-xs flex items-center gap-1.5">
+            <span id="sfx-icon">🔊</span>
+            <span id="sfx-label" class="hidden sm:inline">SFX ON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="mt-3 flex items-center gap-2 overflow-x-auto pb-1">
+        <button data-tab="hq" onclick="switchTab('hq')" class="nav-btn comic-btn px-4 py-2 text-sm font-bold uppercase tracking-wide whitespace-nowrap bg-varsityGold text-black">
+          🏟️ League HQ &amp; Standings
+        </button>
+        <button data-tab="arcade" onclick="switchTab('arcade')" class="nav-btn comic-btn px-4 py-2 text-sm font-bold uppercase tracking-wide whitespace-nowrap bg-comicPaper text-black flex items-center gap-1.5">
+          🕹️ ABND Arcade <span class="bg-crimson text-white text-[11px] px-1.5 py-0.5 rounded border-2 border-black">2 GAMES</span>
+        </button>
+        <button data-tab="caricatures" onclick="switchTab('caricatures')" class="nav-btn comic-btn px-4 py-2 text-sm font-bold uppercase tracking-wide whitespace-nowrap bg-comicPaper text-black">
+          🎨 Manager Caricatures (10)
+        </button>
+        <button data-tab="lore" onclick="switchTab('lore')" class="nav-btn comic-btn px-4 py-2 text-sm font-bold uppercase tracking-wide whitespace-nowrap bg-comicPaper text-black">
+          📜 Lore &amp; Rivalries
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-6 space-y-6">
+
+    <!-- ================================================================
+         SECTION 1: LEAGUE HQ (STANDINGS + MATCHUPS + QUICK ARCADE LAUNCH)
+    ================================================================= -->
+    <section id="tab-hq" class="tab-view space-y-6">
+      <!-- Broadcast Hero Banner -->
+      <div class="comic-box-navy p-5 sm:p-7 halftone-bg">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="badge-season" class="px-3 py-1 rounded-lg bg-varsityGold text-black font-bold text-xs uppercase border-2 border-black shadow-[2px_2px_0_#000]">SEASON 2025</span>
+              <span id="badge-teams" class="px-3 py-1 rounded-lg bg-turf text-white font-bold text-xs uppercase border-2 border-black shadow-[2px_2px_0_#000]">10 TEAMS • TOP 6 PLAYOFFS</span>
+              <span id="badge-week" class="px-3 py-1 rounded-lg bg-crimson text-white font-bold text-xs uppercase border-2 border-black shadow-[2px_2px_0_#000]">WEEK 10</span>
+            </div>
+            <h2 id="hero-league-title" class="font-comic text-4xl sm:text-6xl text-varsityGold comic-heading leading-none">ABND MEASURING STICK HQ</h2>
+            <p class="text-slate-100 text-sm sm:text-base max-w-2xl font-medium">
+              Live Sleeper standings &amp; weekly matchups for League <span class="bg-black/50 text-varsityGold px-2 py-0.5 rounded font-bold border border-varsityGold/40">1357786733483151360</span>, featuring custom comic caricatures of all 10 ABND managers and two playable arcade games starring <strong class="text-varsityGold">Mike</strong> &amp; <strong class="text-emerald-300">Kyle</strong>!
+            </p>
+          </div>
+
+          <div class="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
+            <button onclick="switchTab('arcade', 'basketball')" class="comic-btn px-5 py-3 bg-varsityGold text-black font-comic text-2xl tracking-wide flex items-center gap-2">
+              🏀 PLAY LEGACY SHOOTOUT
+            </button>
+            <button onclick="switchTab('arcade', 'goat')" class="comic-btn px-5 py-3 bg-crimson text-white font-comic text-2xl tracking-wide flex items-center gap-2">
+              🐐 MIKE IS THE GOAT
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Standings & Matchup Scoreboard -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        <!-- Standings Table -->
+        <div class="xl:col-span-7 comic-box overflow-hidden">
+          <div class="bg-electricNavy text-white px-5 py-4 border-b-4 border-black flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="font-comic text-3xl text-varsityGold comic-heading-sm leading-none">📏 THE MEASURING STICK STANDINGS</h3>
+              <p class="text-xs text-slate-200 font-medium mt-0.5">Top 6 make the playoffs • Bottom 4 head toward the Toilet Bowl!</p>
+            </div>
+            <span id="standings-source-badge" class="text-xs font-bold uppercase px-3 py-1 rounded-lg bg-varsityGold text-black border-2 border-black">Syncing...</span>
+          </div>
+
+          <div class="overflow-x-auto bg-comicCard">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-varsityGold/30 text-black font-bold uppercase text-xs tracking-wider border-b-3 border-black">
+                  <th class="py-3 px-3 text-center w-14">Rank</th>
+                  <th class="py-3 px-3">Manager &amp; Team</th>
+                  <th class="py-3 px-3 text-center">W-L-T</th>
+                  <th class="py-3 px-3 text-right">PF</th>
+                  <th class="py-3 px-3 text-right hidden sm:table-cell">PA</th>
+                </tr>
+              </thead>
+              <tbody id="standings-body" class="divide-y-2 divide-black/15 text-sm sm:text-base">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Weekly Matchup Scoreboard -->
+        <div class="xl:col-span-5 comic-box overflow-hidden">
+          <div class="bg-crimson text-white px-5 py-4 border-b-4 border-black flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="font-comic text-3xl text-varsityGold comic-heading-sm leading-none">🏈 WEEKLY SCOREBOARD</h3>
+              <p class="text-xs text-white/90 font-medium mt-0.5">Head-to-head scores from Sleeper</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <label for="week-select" class="text-xs font-bold uppercase text-varsityGold">Week</label>
+              <select id="week-select" onchange="handleWeekChange(this.value)" class="bg-varsityGold text-black font-bold text-sm px-3 py-1.5 rounded-lg border-3 border-black shadow-[2px_2px_0_#000] focus:outline-none">
+                <!-- Weeks 1-17 -->
+              </select>
+            </div>
+          </div>
+
+          <div id="matchups-list" class="p-4 space-y-3 bg-comicPaper">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SECTION 2: ABND ARCADE (2 PLAYABLE HTML5 CANVAS GAMES)
+    ================================================================= -->
+    <section id="tab-arcade" class="tab-view hidden space-y-5">
+      <!-- Game Switcher Banner -->
+      <div class="comic-box-navy p-4 sm:p-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="font-comic text-4xl sm:text-5xl text-varsityGold comic-heading leading-none">🕹️ THE ABND ARCADE</h2>
+            <p class="text-sm text-slate-200 mt-1">Two custom playable games starring <strong class="text-varsityGold">Mike (The Legacy)</strong> &amp; <strong class="text-emerald-300">Kyle (Horseshoe)</strong>!</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button id="btn-choose-bb" onclick="chooseArcadeGame('basketball')" class="comic-btn px-4 py-2.5 bg-varsityGold text-black font-comic text-2xl tracking-wide">
+              🏀 1. THE LEGACY SHOOTOUT
+            </button>
+            <button id="btn-choose-goat" onclick="chooseArcadeGame('goat')" class="comic-btn px-4 py-2.5 bg-comicPaper text-black font-comic text-2xl tracking-wide">
+              🐐 2. MIKE IS THE GOAT
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== GAME 1: THE LEGACY SHOOTOUT ==================== -->
+      <div id="panel-basketball" class="comic-box p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b-3 border-black pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="bg-crimson text-white text-xs font-bold px-2.5 py-0.5 rounded-md border-2 border-black uppercase">Game 1</span>
+              <h3 class="font-comic text-3xl sm:text-4xl text-electricNavy">THE LEGACY SHOOTOUT</h3>
+            </div>
+            <p class="text-sm text-slate-700 font-medium">
+              Make <strong class="text-turf">7 baskets in 60 seconds</strong>! Hold <strong class="text-black">SPACEBAR / CLICK / BUTTON</strong> to charge your shot power, release to shoot. Every shot empties Mike's Endurance Bar to <strong>0%</strong> for <strong>7.0 full seconds</strong> while he catches his breath!
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="bg-navy text-white border-3 border-black rounded-xl px-3.5 py-1.5 text-center min-w-[86px]">
+              <div class="text-[10px] text-slate-300 font-bold uppercase">Baskets</div>
+              <div id="bb-score-txt" class="font-comic text-2xl text-varsityGold">0 / 7</div>
+            </div>
+            <div class="bg-navy text-white border-3 border-black rounded-xl px-3.5 py-1.5 text-center min-w-[86px]">
+              <div class="text-[10px] text-slate-300 font-bold uppercase">Clock</div>
+              <div id="bb-time-txt" class="font-comic text-2xl text-emerald-400">60.0s</div>
+            </div>
+            <div class="bg-navy text-white border-3 border-black rounded-xl px-3.5 py-1.5 text-center min-w-[78px]">
+              <div class="text-[10px] text-slate-300 font-bold uppercase">Shots</div>
+              <div id="bb-shots-txt" class="font-comic text-2xl text-white">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Endurance Bar HUD -->
+        <div class="bg-comicPaper border-3 border-black rounded-xl p-3">
+          <div class="flex items-center justify-between text-xs sm:text-sm font-bold uppercase mb-1.5">
+            <span class="text-navy">🫁 MIKE'S ENDURANCE BAR (7.0s REFILL AFTER EVERY SHOT)</span>
+            <span id="bb-endurance-txt" class="text-turf font-extrabold">100% — READY TO SHOOT!</span>
+          </div>
+          <div class="w-full h-6 bg-slate-300 rounded-full border-3 border-black overflow-hidden">
+            <div id="bb-endurance-bar" class="h-full bg-turf" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Game 1 Canvas -->
+        <div class="arcade-stage" id="bb-stage">
+          <canvas id="bb-canvas"></canvas>
+
+          <!-- Start / Game Over Overlay -->
+          <div id="bb-overlay" class="absolute inset-0 bg-navy/85 backdrop-blur-xs flex items-center justify-center p-4 z-10">
+            <div class="comic-box max-w-md w-full p-6 text-center space-y-4">
+              <span id="bb-ov-badge" class="inline-block bg-varsityGold text-black font-bold text-xs uppercase px-3 py-1 rounded-full border-2 border-black">CARDIO CHALLENGE</span>
+              <h4 id="bb-ov-title" class="font-comic text-4xl sm:text-5xl text-crimson comic-heading-sm leading-none">THE LEGACY SHOOTOUT</h4>
+              <p id="bb-ov-desc" class="text-sm text-slate-800 font-medium leading-relaxed">
+                Mike is laced up in his basketball uniform, Detroit <strong>'D'</strong> cap, and shades! Drain <strong>7 shots in 60 seconds</strong>. Hold &amp; release in the <strong class="text-turf">GREEN SWEET SPOT</strong> (the hoop starts moving after 3 makes!). After every shot, Mike is completely gassed for <strong>7.0 seconds</strong>!
+              </p>
+              <div id="bb-ov-stats" class="hidden grid grid-cols-3 gap-2 bg-comicPaper p-3 rounded-xl border-3 border-black font-bold">
+                <div><div class="text-[10px] text-slate-500">MADE</div><div id="bb-st-made" class="font-comic text-2xl text-turf">0/7</div></div>
+                <div><div class="text-[10px] text-slate-500">ATTEMPTS</div><div id="bb-st-att" class="font-comic text-2xl text-navy">0</div></div>
+                <div><div class="text-[10px] text-slate-500">TIME LEFT</div><div id="bb-st-time" class="font-comic text-2xl text-crimson">0.0s</div></div>
+              </div>
+              <button onclick="BasketballGame.start()" class="comic-btn w-full py-3 bg-varsityGold text-black font-comic text-3xl tracking-wider">
+                🏀 TIP OFF! (START)
+              </button>
+              <p class="text-xs text-slate-600 font-semibold">Hold &amp; Release: <strong>SPACEBAR</strong>, Canvas, or <strong>HOLD TO SHOOT</strong> Button</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- External Controls Row (Outside Canvas) -->
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
+          <button
+            id="bb-hold-btn"
+            onmousedown="BasketballGame.beginCharge()"
+            onmouseup="BasketballGame.releaseShot()"
+            onmouseleave="BasketballGame.cancelCharge()"
+            ontouchstart="event.preventDefault(); BasketballGame.beginCharge()"
+            ontouchend="event.preventDefault(); BasketballGame.releaseShot()"
+            class="comic-btn px-7 py-3.5 bg-varsityGold text-black font-comic text-2xl sm:text-3xl tracking-wider flex items-center gap-2">
+            🏀 HOLD TO CHARGE &amp; RELEASE <span class="text-xs font-body font-bold bg-black/15 px-2 py-0.5 rounded">SPACE</span>
+          </button>
+          <button onclick="BasketballGame.start()" class="comic-btn px-5 py-3.5 bg-navy text-white font-comic text-2xl tracking-wide">
+            🔄 RESTART
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== GAME 2: MIKE IS THE GOAT ==================== -->
+      <div id="panel-goat" class="comic-box p-4 sm:p-6 space-y-4 hidden">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b-3 border-black pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="bg-varsityGold text-black text-xs font-bold px-2.5 py-0.5 rounded-md border-2 border-black uppercase">Game 2</span>
+              <h3 class="font-comic text-3xl sm:text-4xl text-electricNavy">MIKE IS THE GOAT</h3>
+            </div>
+            <p class="text-sm text-slate-700 font-medium">
+              Move <strong class="text-turf">Kyle (Horseshoe)</strong> left/right along the carnival counter and launch <strong class="text-crimson">slow-floating, shamelessly funny compliments</strong> into Mike's head until his ego hits <strong>100%</strong> and <strong>EXPLODES</strong>!
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="bg-navy text-white border-3 border-black rounded-xl px-3.5 py-1.5 text-center min-w-[92px]">
+              <div class="text-[10px] text-slate-300 font-bold uppercase">Head Swell</div>
+              <div id="goat-ego-txt" class="font-comic text-2xl text-crimson">0%</div>
+            </div>
+            <div class="bg-navy text-white border-3 border-black rounded-xl px-3.5 py-1.5 text-center min-w-[84px]">
+              <div class="text-[10px] text-slate-300 font-bold uppercase">Clock</div>
+              <div id="goat-time-txt" class="font-comic text-2xl text-varsityGold">50.0s</div>
+            </div>
+            <div class="bg-navy text-white border-3 border-black rounded-xl px-3.5 py-1.5 text-center min-w-[84px]">
+              <div class="text-[10px] text-slate-300 font-bold uppercase">Compliments</div>
+              <div id="goat-yells-txt" class="font-comic text-2xl text-emerald-400">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ego Swell Meter HUD -->
+        <div class="bg-comicPaper border-3 border-black rounded-xl p-3">
+          <div class="flex items-center justify-between text-xs sm:text-sm font-bold uppercase mb-1.5">
+            <span class="text-navy">🎈 MIKE'S EGO INFLATION METER</span>
+            <span id="goat-status-txt" class="text-electricNavy font-extrabold">MILDLY COCKY (0%)</span>
+          </div>
+          <div class="w-full h-6 bg-slate-300 rounded-full border-3 border-black overflow-hidden">
+            <div id="goat-ego-bar" class="h-full bg-gradient-to-r from-varsityGold via-orange-500 to-crimson" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Game 2 Canvas -->
+        <div class="arcade-stage" id="goat-stage">
+          <canvas id="goat-canvas"></canvas>
+
+          <!-- Start / Win / Lose Overlay -->
+          <div id="goat-overlay" class="absolute inset-0 bg-navy/85 backdrop-blur-xs flex items-center justify-center p-4 z-10">
+            <div class="comic-box max-w-md w-full p-6 text-center space-y-4">
+              <span id="goat-ov-badge" class="inline-block bg-crimson text-white font-bold text-xs uppercase px-3 py-1 rounded-full border-2 border-black">CARNIVAL BOOTH</span>
+              <h4 id="goat-ov-title" class="font-comic text-4xl sm:text-5xl text-varsityGold comic-heading-sm leading-none">MIKE IS THE GOAT!</h4>
+              <p id="goat-ov-desc" class="text-sm text-slate-800 font-medium leading-relaxed">
+                Slide <strong>Kyle</strong> (holding his golden horseshoe &amp; megaphone) using <strong>A/D, Arrow Keys, or Drag</strong> and yell shamelessly funny compliments upward! Aim through drifting <strong class="text-amber-600">GOLDEN 2X HYPE ZONES</strong> for double head-swell, and dodge floating <strong>REALITY CHECK</strong> heckler signs!
+              </p>
+              <div id="goat-ov-stats" class="hidden grid grid-cols-3 gap-2 bg-comicPaper p-3 rounded-xl border-3 border-black font-bold">
+                <div><div class="text-[10px] text-slate-500">EGO PEAK</div><div id="goat-st-ego" class="font-comic text-2xl text-crimson">100%</div></div>
+                <div><div class="text-[10px] text-slate-500">TIME</div><div id="goat-st-time" class="font-comic text-2xl text-navy">0.0s</div></div>
+                <div><div class="text-[10px] text-slate-500">COMPLIMENTS</div><div id="goat-st-yells" class="font-comic text-2xl text-turf">0</div></div>
+              </div>
+              <button onclick="GoatGame.start()" class="comic-btn w-full py-3 bg-varsityGold text-black font-comic text-3xl tracking-wider">
+                📣 STEP RIGHT UP! (PLAY)
+              </button>
+              <p class="text-xs text-slate-600 font-semibold">Move: Left/Right, A/D, or Touch • Yell: Spacebar, Click, or Button Below</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- External Controls Row (Outside Canvas) -->
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
+          <button
+            onmousedown="GoatGame.setTouchMove(-1)" onmouseup="GoatGame.setTouchMove(0)" onmouseleave="GoatGame.setTouchMove(0)"
+            ontouchstart="event.preventDefault(); GoatGame.setTouchMove(-1)" ontouchend="GoatGame.setTouchMove(0)"
+            class="comic-btn px-5 py-3.5 bg-electricNavy text-white font-comic text-2xl select-none">
+            ◀ LEFT
+          </button>
+
+          <button onclick="GoatGame.yellCompliment()" class="comic-btn px-7 py-3.5 bg-crimson text-white font-comic text-2xl sm:text-3xl tracking-wider flex items-center gap-2">
+            📣 YELL COMPLIMENT! <span class="text-xs font-body font-bold bg-black/25 px-2 py-0.5 rounded">SPACE</span>
+          </button>
+
+          <button
+            onmousedown="GoatGame.setTouchMove(1)" onmouseup="GoatGame.setTouchMove(0)" onmouseleave="GoatGame.setTouchMove(0)"
+            ontouchstart="event.preventDefault(); GoatGame.setTouchMove(1)" ontouchend="GoatGame.setTouchMove(0)"
+            class="comic-btn px-5 py-3.5 bg-electricNavy text-white font-comic text-2xl select-none">
+            RIGHT ▶
+          </button>
+
+          <button onclick="GoatGame.start()" class="comic-btn px-4 py-3.5 bg-navy text-white font-comic text-2xl tracking-wide">
+            🔄 RESET
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SECTION 3: ALL 10 MANAGER CARICATURES GALLERY
+    ================================================================= -->
+    <section id="tab-caricatures" class="tab-view hidden space-y-6">
+      <div class="comic-box-navy p-5 sm:p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="font-comic text-4xl sm:text-5xl text-varsityGold comic-heading leading-none">🎨 THE 10 ABND MANAGER CARICATURES</h2>
+            <p class="text-sm sm:text-base text-slate-200 mt-1 max-w-3xl">
+              Custom comic illustrations modeled directly after the ABND Measuring Stick &amp; manager likenesses — from Tony waving the Italian flag at 1st place down to Kimbo slice sliding toward the Toilet Bowl!
+            </p>
+          </div>
+          <button onclick="switchTab('arcade')" class="comic-btn px-5 py-3 bg-varsityGold text-black font-comic text-2xl tracking-wide shrink-0">
+            🕹️ LAUNCH ARCADE
+          </button>
+        </div>
+      </div>
+
+      <div id="caricatures-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Populated dynamically -->
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SECTION 4: LEAGUE LORE & RIVALRIES
+    ================================================================= -->
+    <section id="tab-lore" class="tab-view hidden space-y-6">
+      <div class="comic-box-navy p-5 sm:p-6">
+        <h2 class="font-comic text-4xl sm:text-5xl text-varsityGold comic-heading leading-none">📜 ABND LORE, RIVALRIES &amp; INSIDE JOKES</h2>
+        <p class="text-sm sm:text-base text-slate-200 mt-1">The sacred history of ABND Fantasy Football — brotherly feuds, Rocky playoff bubble training, and shaky championship camerawork.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 1. NASHTY BOWL RIVALRY CARD -->
+        <div class="comic-box overflow-hidden flex flex-col">
+          <div class="bg-crimson text-white px-5 py-4 border-b-4 border-black flex items-center justify-between">
+            <h3 class="font-comic text-3xl text-varsityGold comic-heading-sm leading-none">⚔️ THE NASHTY BOWL</h3>
+            <span class="bg-black text-varsityGold text-xs font-bold px-2.5 py-1 rounded uppercase">Brotherly Feud</span>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-4 bg-comicCard">
+            <p class="text-sm text-slate-800 font-medium">
+              When <strong>Matt</strong> (Tuten in Boston's Fields) collides with brother <strong>Kyle</strong> (Horseshoe), family bragging rights are permanently on the line. Live Sleeper comparison:
+            </p>
+
+            <div class="grid grid-cols-2 gap-3 relative">
+              <div class="bg-comicPaper border-3 border-black rounded-xl p-3.5 text-center space-y-1.5 shadow-[3px_3px_0_#000]">
+                <div id="lore-matt-avatar" class="w-16 h-16 mx-auto rounded-full border-3 border-black overflow-hidden bg-sky-100"></div>
+                <div id="lore-matt-team" class="font-comic text-xl text-electricNavy leading-tight">Tuten in Boston's Fields</div>
+                <div id="lore-matt-mgr" class="text-xs font-bold text-slate-600">Matt</div>
+                <div id="lore-matt-rec" class="font-comic text-3xl text-black">5-5</div>
+                <div id="lore-matt-pf" class="text-xs font-bold text-turf">1162.4 PF</div>
+              </div>
+
+              <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-varsityGold border-3 border-black flex items-center justify-center font-comic text-xl text-black shadow-[2px_2px_0_#000]">
+                VS
+              </div>
+
+              <div class="bg-comicPaper border-3 border-black rounded-xl p-3.5 text-center space-y-1.5 shadow-[3px_3px_0_#000]">
+                <div id="lore-kyle-avatar" class="w-16 h-16 mx-auto rounded-full border-3 border-black overflow-hidden bg-amber-100"></div>
+                <div id="lore-kyle-team" class="font-comic text-xl text-electricNavy leading-tight">Horseshoe</div>
+                <div id="lore-kyle-mgr" class="text-xs font-bold text-slate-600">Kyle</div>
+                <div id="lore-kyle-rec" class="font-comic text-3xl text-black">5-5</div>
+                <div id="lore-kyle-pf" class="text-xs font-bold text-turf">1141.5 PF</div>
+              </div>
+            </div>
+
+            <div id="nashty-verdict" class="bg-varsityGold/35 border-3 border-black rounded-xl p-3 text-center text-xs sm:text-sm font-bold text-black">
+              🔥 Matt currently holds the Nashty Bowl edge — Kyle is polishing his giant golden horseshoe!
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. "HOLD THE CAMERA STEADY FOR DAD!" SHAKY TROPHY CAM -->
+        <div class="comic-box overflow-hidden flex flex-col">
+          <div class="bg-varsityGold text-black px-5 py-4 border-b-4 border-black flex items-center justify-between">
+            <h3 class="font-comic text-3xl text-black leading-none">📹 HOLD THE CAMERA STEADY FOR DAD!</h3>
+            <span class="bg-crimson text-white text-xs font-bold px-2.5 py-1 rounded border-2 border-black uppercase">Easter Egg</span>
+          </div>
+
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-4 bg-comicCard">
+            <p class="text-sm text-slate-800 font-medium">
+              Hit record to experience the legendary ABND trophy presentation camera angle.
+            </p>
+
+            <div id="dad-cam-box" class="relative bg-navy text-white border-4 border-black rounded-xl p-5 text-center overflow-hidden select-none">
+              <div class="flex items-center justify-between text-xs font-bold mb-2">
+                <span class="flex items-center gap-1.5 text-crimson"><span class="w-2.5 h-2.5 rounded-full bg-crimson inline-block live-dot"></span> REC 00:01:42</span>
+                <span class="text-varsityGold">IMAGE STABILIZATION: OFF ❌</span>
+                <span>BAT 9%</span>
+              </div>
+
+              <!-- Trophy Illustration -->
+              <div class="w-28 h-28 mx-auto my-2">
+                <svg viewBox="0 0 120 120" class="w-full h-full">
+                  <path d="M34 22 H86 V52 C86 72 74 84 60 84 C46 84 34 72 34 52 Z" fill="#facc15" stroke="#000" stroke-width="5"/>
+                  <path d="M34 30 H18 C14 30 14 56 34 58" fill="none" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M86 30 H102 C106 30 106 56 86 58" fill="none" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
+                  <rect x="53" y="84" width="14" height="14" fill="#eab308" stroke="#000" stroke-width="3.5"/>
+                  <rect x="34" y="98" width="52" height="12" rx="4" fill="#78350f" stroke="#000" stroke-width="3.5"/>
+                  <text x="60" y="58" text-anchor="middle" font-family="Bangers" font-size="20" fill="#000">ABND</text>
+                </svg>
+              </div>
+
+              <div id="dad-cam-caption" class="bg-comicPaper text-black font-comic text-xl sm:text-2xl px-4 py-2 rounded-xl border-3 border-black shadow-[3px_3px_0_#000]">
+                "Ready to film the championship trophy..."
+              </div>
+            </div>
+
+            <button onclick="triggerDadCam()" class="comic-btn w-full py-3 bg-crimson text-white font-comic text-2xl tracking-wider">
+              🎥 PRESS RECORD (SHAKE CAMERA!)
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. ROCKY PLAYOFF BUBBLE TRAINING MONTAGE -->
+        <div class="lg:col-span-2 comic-box overflow-hidden">
+          <div class="bg-electricNavy text-white px-5 py-4 border-b-4 border-black flex flex-wrap items-center justify-between gap-2">
+            <h3 class="font-comic text-3xl text-varsityGold comic-heading-sm leading-none">🥊 ROCKY PLAYOFF BUBBLE TRAINING MONTAGE</h3>
+            <button onclick="triggerRockyMontage()" class="comic-btn px-4 py-1.5 bg-varsityGold text-black font-comic text-xl tracking-wide">
+              🎺 cue the training horns!
+            </button>
+          </div>
+
+          <div id="rocky-grid" class="p-5 grid grid-cols-1 md:grid-cols-3 gap-4 bg-comicCard">
+            <div class="bg-comicPaper border-3 border-black rounded-xl p-4 flex items-center gap-4 shadow-[3px_3px_0_#000]">
+              <div id="rocky-seth" class="w-20 h-20 rounded-xl border-3 border-black overflow-hidden shrink-0"></div>
+              <div>
+                <div class="font-comic text-2xl text-electricNavy">SETH (ISuck@FF)</div>
+                <div class="text-xs font-bold text-crimson uppercase">Cardboard Sign Cardio</div>
+                <p class="text-xs text-slate-700 font-medium mt-1">Running 5 AM sprints while holding his 'I SUCK @ FF' sign like a championship belt.</p>
+              </div>
+            </div>
+
+            <div class="bg-comicPaper border-3 border-black rounded-xl p-4 flex items-center gap-4 shadow-[3px_3px_0_#000]">
+              <div id="rocky-kyle" class="w-20 h-20 rounded-xl border-3 border-black overflow-hidden shrink-0"></div>
+              <div>
+                <div class="font-comic text-2xl text-electricNavy">KYLE (HORSESHOE)</div>
+                <div class="text-xs font-bold text-turf uppercase">Heavy Horseshoe Curls</div>
+                <p class="text-xs text-slate-700 font-medium mt-1">Benching a 45-lb solid brass horseshoe to climb past Matt in the Nashty Bowl standings.</p>
+              </div>
+            </div>
+
+            <div class="bg-comicPaper border-3 border-black rounded-xl p-4 flex items-center gap-4 shadow-[3px_3px_0_#000]">
+              <div id="rocky-mike" class="w-20 h-20 rounded-xl border-3 border-black overflow-hidden shrink-0"></div>
+              <div>
+                <div class="font-comic text-2xl text-electricNavy">MIKE (THE LEGACY)</div>
+                <div class="text-xs font-bold text-amber-600 uppercase">7-Second Oxygen Drills</div>
+                <p class="text-xs text-slate-700 font-medium mt-1">Takes one jump shot at the bottom of the museum steps and rests for 7 full seconds per stair.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="rocky-callout" class="hidden mx-5 mb-5 bg-varsityGold text-black font-comic text-2xl text-center py-2.5 px-4 rounded-xl border-3 border-black shadow-[4px_4px_0_#000]">
+            🥊 EYE OF THE PLAYOFF BUBBLE! NOBODY SURVIVES THE TOILET BOWL WITHOUT TRAINING! 🥊
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t-4 border-black bg-navy text-white py-5 px-4 text-center text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-bold">ABND FANTASY FOOTBALL NETWORK • Sleeper League ID <span class="text-varsityGold">1357786733483151360</span></p>
+      <p class="text-slate-300">Measuring Stick Edition • 10 Custom Caricatures • 2 Playable Arcade Games 🏆🐐🏀</p>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-area"></div>
+
+  <!-- ========================================================================
+       JAVASCRIPT: AUDIO ENGINE, 10 MEASURING-STICK CARICATURES, SLEEPER API, & GAMES
+  ========================================================================= -->
+  <script>
+    /* ========================================================================
+       1. TOAST NOTIFICATION SYSTEM (Zero alert/confirm usage)
+    ========================================================================= */
+    function showToast(msg, variant = 'gold') {
+      const area = document.getElementById('toast-area');
+      const card = document.createElement('div');
+      const styles = {
+        gold: 'bg-varsityGold text-black',
+        green: 'bg-turf text-white',
+        red: 'bg-crimson text-white',
+        navy: 'bg-electricNavy text-white'
+      };
+      card.className = `toast-card border-3 border-black shadow-[4px_4px_0_#000] rounded-xl px-4 py-2.5 text-sm font-bold max-w-xs ${styles[variant] || styles.gold}`;
+      card.textContent = msg;
+      area.appendChild(card);
+      setTimeout(() => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(10px)';
+        card.style.transition = 'all 0.25s ease';
+        setTimeout(() => card.remove(), 260);
+      }, 3000);
+    }
+
+    /* ========================================================================
+       2. RETRO ARCADE SOUND SYNTHESIZER (Web Audio API)
+    ========================================================================= */
+    const SoundFX = (() => {
+      let ctx = null;
+      let enabled = true;
+
+      function getCtx() {
+        if (!enabled) return null;
+        if (!ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) ctx = new AC();
+        }
+        if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
+        return ctx;
+      }
+
+      function tone(freq, dur, type = 'square', vol = 0.11, endFreq = null) {
+        const ac = getCtx();
+        if (!ac) return;
+        const osc = ac.createOscillator();
+        const gain = ac.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ac.currentTime);
+        if (endFreq) osc.frequency.exponentialRampToValueAtTime(Math.max(25, endFreq), ac.currentTime + dur);
+        gain.gain.setValueAtTime(vol, ac.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(ac.destination);
+        osc.start();
+        osc.stop(ac.currentTime + dur);
+      }
+
+      function noise(dur, vol = 0.1, band = 1200) {
+        const ac = getCtx();
+        if (!ac) return;
+        const len = Math.floor(ac.sampleRate * dur);
+        const buf = ac.createBuffer(1, len, ac.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+        const src = ac.createBufferSource();
+        src.buffer = buf;
+        const filter = ac.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = band;
+        const gain = ac.createGain();
+        gain.gain.setValueAtTime(vol, ac.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ac.destination);
+        src.start();
+      }
+
+      return {
+        toggle() {
+          enabled = !enabled;
+          if (enabled) this.click();
+          return enabled;
+        },
+        click() { tone(540, 0.06, 'triangle', 0.1, 720); },
+        shoot() { tone(260, 0.15, 'sine', 0.14, 540); },
+        swish() {
+          noise(0.22, 0.16, 2600);
+          setTimeout(() => tone(660, 0.11, 'triangle', 0.12, 990), 80);
+          setTimeout(() => tone(880, 0.16, 'triangle', 0.12, 1320), 160);
+        },
+        rim() { tone(190, 0.12, 'sawtooth', 0.12, 110); },
+        brick() {
+          tone(145, 0.16, 'sawtooth', 0.15, 68);
+          setTimeout(() => tone(110, 0.18, 'square', 0.12, 62), 110);
+        },
+        pant() { noise(0.18, 0.065, 850); },
+        ding() {
+          tone(880, 0.12, 'sine', 0.15, 1320);
+          setTimeout(() => tone(1318, 0.24, 'sine', 0.15), 90);
+        },
+        buzzer() {
+          tone(110, 0.65, 'sawtooth', 0.17, 92);
+          tone(138, 0.65, 'square', 0.11, 118);
+        },
+        yell(superHit = false) {
+          if (superHit) {
+            tone(440, 0.12, 'sawtooth', 0.13, 880);
+            setTimeout(() => tone(660, 0.16, 'square', 0.13, 1180), 80);
+          } else {
+            tone(340, 0.11, 'sawtooth', 0.11, 620);
+          }
+        },
+        swell(ratio) {
+          const f = 220 + ratio * 450;
+          tone(f, 0.14, 'triangle', 0.11, f + 140);
+        },
+        heckle() { tone(205, 0.15, 'sawtooth', 0.12, 125); },
+        explode() {
+          noise(0.45, 0.28, 600);
+          tone(180, 0.3, 'sawtooth', 0.22, 35);
+          setTimeout(() => this.fanfare(), 280);
+        },
+        fanfare() {
+          [523, 659, 784, 1046].forEach((n, i) => {
+            setTimeout(() => tone(n, i === 3 ? 0.42 : 0.13, 'triangle', 0.14), i * 115);
+          });
+        },
+        shake() {
+          noise(0.24, 0.11, 520);
+          tone(175, 0.12, 'square', 0.1, 240);
+        },
+        horns() {
+          [392, 392, 523, 587, 659].forEach((n, i) => {
+            setTimeout(() => tone(n, i === 4 ? 0.38 : 0.13, 'sawtooth', 0.12), i * 145);
+          });
+        }
+      };
+    })();
+
+    function toggleSound() {
+      const on = SoundFX.toggle();
+      document.getElementById('sfx-icon').textContent = on ? '🔊' : '🔇';
+      document.getElementById('sfx-label').textContent = on ? 'SFX ON' : 'SFX OFF';
+      const btn = document.getElementById('sfx-btn');
+      btn.classList.toggle('bg-varsityGold', on);
+      btn.classList.toggle('bg-slate-600', !on);
+      btn.classList.toggle('text-black', on);
+      btn.classList.toggle('text-white', !on);
+    }
+
+    /* ========================================================================
+       3. ALL 10 MANAGER PROFILES & MEASURING-STICK COMIC CARICATURE SVGs
+    ========================================================================= */
+    const MANAGER_KEYS = ['tony', 'bryan', 'jason', 'kevin', 'matt', 'manny', 'seth', 'kyle', 'mike', 'danny'];
+
+    const MANAGER_PROFILES = {
+      tony: {
+        key: 'tony',
+        manager: 'Tony',
+        team: 'Italy America FC',
+        title: 'The #1 Seed Flag Bearer',
+        desc: 'Thick curly dark hair, bushy brows, full salt-and-pepper beard, blue Italy America FC jersey, waving the green-white-red Italian flag at the top of the Measuring Stick.',
+        quote: '"Bow to the top of the Measuring Stick, ragazzi! 🇮🇹"',
+        tag: '#1 SEED ENERGY',
+        tagStyle: 'bg-varsityGold text-black',
+        keywords: ['italy', 'america', 'tony']
+      },
+      bryan: {
+        key: 'bryan',
+        manager: 'Bryan',
+        team: 'Waffle Stomps',
+        title: 'Golden Waffle-Cleat Crusher',
+        desc: 'Short buzzed dark hair, full dark beard, grey zip hoodie, mid-stomp crushing a giant golden waffle labeled WAFFLE STOMP.',
+        quote: '"Syrup on Sundays, Waffle Stomps on your fantasy roster!"',
+        tag: 'WAFFLE STOMP',
+        tagStyle: 'bg-amber-400 text-black',
+        keywords: ['waffle', 'stomp', 'bryan', 'brian']
+      },
+      jason: {
+        key: 'jason',
+        manager: 'Jason',
+        team: 'Bye Week',
+        title: 'Lawn Chair Vacationer',
+        desc: 'Black baseball cap, thick dark full beard, black long-sleeve shirt, kicking back relaxed in a folding lawn chair without a care in the world.',
+        quote: '"Can\'t lose if my whole squad is kicking back on Bye!"',
+        tag: 'BYE WEEK CHILL',
+        tagStyle: 'bg-sky-300 text-black',
+        keywords: ['bye', 'week', 'jason']
+      },
+      kevin: {
+        key: 'kevin',
+        manager: 'Kevin',
+        team: 'Raging Pandas',
+        title: 'Red Wings Panda Rider',
+        desc: 'Red-and-white Detroit Red Wings winged-wheel cap, dark rectangular glasses, reddish-brown beard, mint green tee, riding a giant cartoon panda with a RAGING PANDAS badge.',
+        quote: '"Winged wheel on the dome, Raging Panda in the backfield!"',
+        tag: 'RAGING PANDAS',
+        tagStyle: 'bg-emerald-400 text-black',
+        keywords: ['panda', 'raging', 'kevin']
+      },
+      matt: {
+        key: 'matt',
+        manager: 'Matt',
+        team: "Tuten in Boston's Fields",
+        title: 'Nashty Bowl Contender',
+        desc: 'Navy Detroit D cap, rectangular glasses, salt-and-pepper beard with signature white chin patch, light blue TUTEN IN BOSTON\'S FIELDS tee.',
+        quote: '"Check the Nashty Bowl scoreboard, little brother Kyle!"',
+        tag: 'NASHTY BOWL',
+        tagStyle: 'bg-blue-400 text-black',
+        keywords: ['tuten', 'boston', 'fields', 'matt']
+      },
+      manny: {
+        key: 'manny',
+        manager: 'Manny',
+        team: '🤷‍♂️',
+        title: 'The Unfazed Shrug Master',
+        desc: 'Dark side-parted hair, plaid flannel button-up, dramatic shrugging hands with a floating 🤷‍♂️ speech bubble.',
+        quote: '"🤷‍♂️ Honestly, I forgot to set my lineup and still won."',
+        tag: '🤷‍♂️',
+        tagStyle: 'bg-orange-300 text-black',
+        keywords: ['manny', '🤷', 'shrug']
+      },
+      seth: {
+        key: 'seth',
+        manager: 'Seth',
+        team: 'ISuck@FF',
+        title: 'Brutally Honest Grinder',
+        desc: 'Grey-and-black trucker cap, dark wraparound sunglasses, thick dark beard, teal tee, proudly holding a cardboard sign reading I SUCK @ FF.',
+        quote: '"At least my cardboard sign has first-round draft value."',
+        tag: 'I SUCK @ FF',
+        tagStyle: 'bg-slate-200 text-black',
+        keywords: ['isuck', 'suck', 'seth']
+      },
+      kyle: {
+        key: 'kyle',
+        manager: 'Kyle',
+        team: 'Horseshoe',
+        title: 'Golden Horseshoe Hypeman',
+        desc: 'Swept-back brown hair, bright blue eyes, sandy trimmed beard, grey tee, gripping a giant shiny gold horseshoe.',
+        quote: '"MIKE, YOU ARE LITERALLY THE GREATEST MIND IN FANTASY!"',
+        tag: 'PLAYABLE IN GAME 2 📣',
+        tagStyle: 'bg-turf text-white',
+        keywords: ['horseshoe', 'kyle']
+      },
+      mike: {
+        key: 'mike',
+        manager: 'Mike',
+        team: 'The Legacy',
+        title: 'Former Champ • 0 Cardio',
+        desc: 'Navy Detroit D cap, dark rectangular sunglasses, trimmed dark beard, dark hoodie/basketball gear, speech bubble saying "I used to be a champion!".',
+        quote: '"I used to be a champion! (Give me 7 seconds to breathe...)"',
+        tag: 'ARCADE STAR 🏀🐐',
+        tagStyle: 'bg-crimson text-white',
+        keywords: ['legacy', 'mike', 'michael']
+      },
+      danny: {
+        key: 'danny',
+        manager: 'Danny',
+        team: 'Kimbo slice',
+        title: 'Toilet Bowl Gi Slider',
+        desc: 'Dark hair, full dark beard, white martial arts gi with red KIMBO SLICE patch, sliding headfirst toward a cartoon toilet bowl.',
+        quote: '"Black belt in fantasy football, headfirst slide into the Toilet Bowl!"',
+        tag: 'KIMBO SLICE 🚽',
+        tagStyle: 'bg-rose-400 text-black',
+        keywords: ['kimbo', 'slice', 'danny', 'dan']
+      }
+    };
+
+    /**
+     * Generates rich comic-book SVG caricatures matching the Measuring Stick illustration
+     */
+    function getManagerComicSVG(key) {
+      switch (key) {
+        /* TONY — Italy America FC */
+        case 'tony':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#bae6fd"/>
+            <circle cx="110" cy="110" r="95" fill="#38bdf8" opacity="0.22"/>
+            <!-- Waving Italian Flag (Green-White-Red) -->
+            <line x1="168" y1="158" x2="152" y2="34" stroke="#78350f" stroke-width="5" stroke-linecap="round"/>
+            <g transform="translate(152,34) rotate(-8)">
+              <rect x="0" y="0" width="18" height="36" fill="#16a34a" stroke="#000" stroke-width="3"/>
+              <rect x="18" y="0" width="18" height="36" fill="#ffffff" stroke="#000" stroke-width="3"/>
+              <rect x="36" y="0" width="18" height="36" fill="#dc2626" stroke="#000" stroke-width="3"/>
+            </g>
+            <!-- Blue Italy America FC Jersey -->
+            <path d="M24 220 C32 152 62 142 106 142 C148 142 176 152 184 220 Z" fill="#1d4ed8" stroke="#000" stroke-width="4.5"/>
+            <text x="104" y="182" text-anchor="middle" font-family="Bangers" font-size="16" fill="#ffffff" stroke="#000" stroke-width="0.6">ITALY</text>
+            <text x="104" y="198" text-anchor="middle" font-family="Bangers" font-size="15" fill="#facc15">AMERICA FC</text>
+            <!-- Raised Arm holding flag -->
+            <path d="M148 158 L168 126" stroke="#000" stroke-width="14" stroke-linecap="round"/>
+            <path d="M148 158 L168 126" stroke="#1d4ed8" stroke-width="8" stroke-linecap="round"/>
+            <!-- Thick Curly Dark Hair -->
+            <g fill="#1c1917" stroke="#000" stroke-width="4">
+              <circle cx="66" cy="64" r="17"/><circle cx="82" cy="44" r="19"/><circle cx="106" cy="38" r="21"/>
+              <circle cx="130" cy="44" r="19"/><circle cx="146" cy="64" r="17"/><circle cx="62" cy="84" r="13"/><circle cx="150" cy="84" r="13"/>
+            </g>
+            <!-- Head -->
+            <ellipse cx="106" cy="92" rx="40" ry="44" fill="#f1c27d" stroke="#000" stroke-width="4.5"/>
+            <!-- Full Salt-and-Pepper Beard -->
+            <path d="M64 92 C60 144 82 162 106 162 C130 162 152 144 148 92 C138 108 126 114 106 114 C86 114 74 108 64 92 Z" fill="#4b5563" stroke="#000" stroke-width="4"/>
+            <path d="M74 122 Q106 154 138 122 Q128 154 106 156 Q84 154 74 122 Z" fill="#d1d5db"/>
+            <!-- Bushy Brows, Eyes & Happy Grin -->
+            <path d="M74 74 Q88 68 99 74" fill="none" stroke="#000" stroke-width="5.5" stroke-linecap="round"/>
+            <path d="M113 74 Q124 68 138 74" fill="none" stroke="#000" stroke-width="5.5" stroke-linecap="round"/>
+            <circle cx="87" cy="84" r="4.8" fill="#000"/><circle cx="125" cy="84" r="4.8" fill="#000"/>
+            <path d="M84 110 Q106 130 128 110 Z" fill="#fff" stroke="#000" stroke-width="3.5"/>
+          </svg>`;
+
+        /* BRYAN — Waffle Stomps */
+        case 'bryan':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#fef3c7"/>
+            <!-- Grey Zip Hoodie -->
+            <path d="M36 196 C42 138 68 130 112 130 C156 130 182 138 188 196 Z" fill="#6b7280" stroke="#000" stroke-width="4.5"/>
+            <line x1="112" y1="132" x2="112" y2="196" stroke="#000" stroke-width="3.5"/>
+            <!-- Head -->
+            <ellipse cx="112" cy="82" rx="38" ry="42" fill="#f3c59f" stroke="#000" stroke-width="4.5"/>
+            <!-- Short Buzzed Dark Hair -->
+            <path d="M74 66 C74 34 92 26 112 26 C132 26 150 34 150 66 C142 48 130 44 112 44 C94 44 82 48 74 66 Z" fill="#1f1612" stroke="#000" stroke-width="4"/>
+            <!-- Full Dark Beard -->
+            <path d="M75 84 C75 124 92 132 112 132 C132 132 149 124 149 84 C141 100 130 106 112 106 C94 106 83 100 75 84 Z" fill="#231813" stroke="#000" stroke-width="3.5"/>
+            <circle cx="95" cy="74" r="4.5" fill="#1d4ed8"/><circle cx="129" cy="74" r="4.5" fill="#1d4ed8"/>
+            <path d="M92 102 Q112 120 132 102 Z" fill="#fff" stroke="#000" stroke-width="3"/>
+            <!-- Giant Golden Waffle labeled WAFFLE STOMP -->
+            <g transform="translate(72, 184) rotate(-8)">
+              <ellipse cx="0" cy="0" rx="54" ry="26" fill="#f59e0b" stroke="#000" stroke-width="4"/>
+              <ellipse cx="0" cy="-3" rx="48" ry="21" fill="#facc15" stroke="#92400e" stroke-width="2"/>
+              <text x="0" y="2" text-anchor="middle" font-family="Bangers" font-size="16" fill="#78350f">WAFFLE STOMP</text>
+            </g>
+            <!-- Stomping Sneaker Boot on top of Waffle -->
+            <path d="M44 152 L74 144 L86 168 L36 172 Z" fill="#1e293b" stroke="#000" stroke-width="4"/>
+            <line x1="36" y1="170" x2="86" y2="166" stroke="#fff" stroke-width="3"/>
+          </svg>`;
+
+        /* JASON — Bye Week */
+        case 'jason':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#bae6fd"/>
+            <rect x="0" y="166" width="220" height="54" fill="#86efac" stroke="#000" stroke-width="3"/>
+            <!-- Folding Lawn Chair Frame -->
+            <path d="M42 132 L68 186 L158 174 L176 124" fill="none" stroke="#16a34a" stroke-width="7" stroke-linecap="round"/>
+            <line x1="68" y1="186" x2="54" y2="210" stroke="#334155" stroke-width="5"/>
+            <line x1="158" y1="174" x2="172" y2="206" stroke="#334155" stroke-width="5"/>
+            <!-- Relaxed Black Long-Sleeve Shirt & Jeans -->
+            <path d="M56 140 C66 112 96 108 134 116 L156 168 L74 176 Z" fill="#1e293b" stroke="#000" stroke-width="4.5"/>
+            <path d="M138 152 L192 168 L184 188 L128 174 Z" fill="#3b82f6" stroke="#000" stroke-width="4"/>
+            <!-- Head leaned back relaxed -->
+            <g transform="translate(106, 76) rotate(8)">
+              <ellipse cx="0" cy="0" rx="36" ry="40" fill="#f1c27d" stroke="#000" stroke-width="4.5"/>
+              <!-- Thick Dark Full Beard -->
+              <path d="M-36 2 C-36 42 -18 50 0 50 C18 50 36 42 36 2 C28 18 18 24 0 24 C-18 24 -28 18 -36 2 Z" fill="#1f1612" stroke="#000" stroke-width="3.5"/>
+              <!-- Happy Closed Eyes & Grin -->
+              <path d="M-22 -8 Q-14 -14 -6 -8" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M6 -8 Q14 -14 22 -8" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M-18 18 Q0 34 18 18 Z" fill="#fff" stroke="#000" stroke-width="3"/>
+              <!-- Black Baseball Cap -->
+              <path d="M-36 -16 C-34 -48 -16 -54 0 -54 C16 -54 34 -48 36 -16 Z" fill="#111827" stroke="#000" stroke-width="4"/>
+              <path d="M-42 -16 Q0 -26 42 -16 L36 -10 Q0 -20 -36 -10 Z" fill="#030712" stroke="#000" stroke-width="3.5"/>
+            </g>
+            <rect x="64" y="190" width="92" height="22" rx="6" fill="#facc15" stroke="#000" stroke-width="3"/>
+            <text x="110" y="206" text-anchor="middle" font-family="Bangers" font-size="16" fill="#000">CHILLIN' ON BYE</text>
+          </svg>`;
+
+        /* KEVIN — Raging Pandas */
+        case 'kevin':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#dcfce7"/>
+            <!-- Giant Cartoon Panda Body at bottom -->
+            <ellipse cx="110" cy="176" rx="68" ry="38" fill="#ffffff" stroke="#000" stroke-width="4.5"/>
+            <path d="M84 142 Q110 166 136 142 L144 206 L76 206 Z" fill="#111827"/>
+            <!-- Panda Head on Left -->
+            <circle cx="42" cy="144" r="12" fill="#111827" stroke="#000" stroke-width="3.5"/>
+            <circle cx="84" cy="144" r="12" fill="#111827" stroke="#000" stroke-width="3.5"/>
+            <ellipse cx="63" cy="166" rx="30" ry="26" fill="#ffffff" stroke="#000" stroke-width="4"/>
+            <ellipse cx="52" cy="162" rx="7" ry="9" fill="#111827"/><circle cx="53" cy="161" r="2.5" fill="#fff"/>
+            <ellipse cx="74" cy="162" rx="7" ry="9" fill="#111827"/><circle cx="73" cy="161" r="2.5" fill="#fff"/>
+            <ellipse cx="63" cy="173" rx="5" ry="3.5" fill="#111827"/>
+            <text x="144" y="176" text-anchor="middle" font-family="Bangers" font-size="13" fill="#ffffff">RAGING</text>
+            <text x="144" y="190" text-anchor="middle" font-family="Bangers" font-size="13" fill="#facc15">PANDAS</text>
+            <!-- Kevin Riding on Top in Mint Green Tee -->
+            <path d="M90 144 C94 114 108 108 128 108 C148 108 162 114 166 144 Z" fill="#99f6e4" stroke="#000" stroke-width="4"/>
+            <ellipse cx="128" cy="72" rx="34" ry="37" fill="#f3c59f" stroke="#000" stroke-width="4.5"/>
+            <!-- Reddish-Brown Beard -->
+            <path d="M95 74 C95 108 110 114 128 114 C146 114 161 108 161 74 C153 88 144 92 128 92 C112 92 103 88 95 74 Z" fill="#9a5b32" stroke="#000" stroke-width="3"/>
+            <path d="M111 88 Q128 103 145 88 Z" fill="#fff" stroke="#000" stroke-width="2.5"/>
+            <!-- Red-and-White Detroit Red Wings Winged-Wheel Cap -->
+            <path d="M94 54 C96 22 112 16 128 16 C144 16 160 22 162 54 Z" fill="#dc2626" stroke="#000" stroke-width="4"/>
+            <path d="M88 54 Q128 44 168 54 L160 60 Q128 50 96 60 Z" fill="#b91c1c" stroke="#000" stroke-width="3.5"/>
+            <circle cx="122" cy="36" r="7" fill="none" stroke="#fff" stroke-width="2.5"/>
+            <path d="M128 33 L145 28 L141 35 L147 38 L128 40 Z" fill="#fff"/>
+            <!-- Dark Rectangular Glasses -->
+            <rect x="98" y="60" width="26" height="15" rx="3" fill="rgba(255,255,255,0.2)" stroke="#000" stroke-width="3.5"/>
+            <rect x="132" y="60" width="26" height="15" rx="3" fill="rgba(255,255,255,0.2)" stroke="#000" stroke-width="3.5"/>
+            <line x1="124" y1="67" x2="132" y2="67" stroke="#000" stroke-width="3.5"/>
+          </svg>`;
+
+        /* MATT — Tuten in Boston's Fields */
+        case 'matt':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#dbeafe"/>
+            <!-- Light Blue TUTEN IN BOSTON'S FIELDS Tee -->
+            <path d="M24 220 C32 152 62 142 110 142 C158 142 188 152 196 220 Z" fill="#7dd3fc" stroke="#000" stroke-width="4.5"/>
+            <text x="110" y="178" text-anchor="middle" font-family="Bangers" font-size="16" fill="#0f172a">TUTEN IN</text>
+            <text x="110" y="195" text-anchor="middle" font-family="Bangers" font-size="16" fill="#0f172a">BOSTON'S</text>
+            <text x="110" y="211" text-anchor="middle" font-family="Bangers" font-size="16" fill="#0f172a">FIELDS</text>
+            <!-- Head -->
+            <ellipse cx="110" cy="92" rx="42" ry="45" fill="#f3c59f" stroke="#000" stroke-width="4.5"/>
+            <!-- Salt-and-Pepper Beard with Prominent White Chin Patch -->
+            <path d="M68 92 C68 138 88 148 110 148 C132 148 152 138 152 92 C142 108 132 114 110 114 C88 114 78 108 68 92 Z" fill="#6b7280" stroke="#000" stroke-width="3.5"/>
+            <path d="M93 122 Q110 118 127 122 Q124 144 110 146 Q96 144 93 122 Z" fill="#ffffff"/>
+            <path d="M92 112 Q110 128 128 112 Z" fill="#fff" stroke="#000" stroke-width="3"/>
+            <!-- Navy Detroit 'D' Cap -->
+            <path d="M66 68 C68 28 90 20 110 20 C130 20 152 28 154 68 Z" fill="#0f172a" stroke="#000" stroke-width="4.5"/>
+            <path d="M60 68 Q110 56 160 68 L152 76 Q110 64 68 76 Z" fill="#1e293b" stroke="#000" stroke-width="4"/>
+            <text x="110" y="50" text-anchor="middle" font-family="Georgia, serif" font-weight="bold" font-size="24" fill="#fff">D</text>
+            <!-- Rectangular Glasses -->
+            <rect x="72" y="76" width="34" height="19" rx="4" fill="rgba(255,255,255,0.18)" stroke="#000" stroke-width="4"/>
+            <rect x="114" y="76" width="34" height="19" rx="4" fill="rgba(255,255,255,0.18)" stroke="#000" stroke-width="4"/>
+            <line x1="106" y1="85" x2="114" y2="85" stroke="#000" stroke-width="4"/>
+            <circle cx="89" cy="86" r="4" fill="#15803d"/><circle cx="131" cy="86" r="4" fill="#15803d"/>
+          </svg>`;
+
+        /* MANNY — 🤷‍♂️ */
+        case 'manny':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#fef9c3"/>
+            <!-- Speech Bubble with 🤷‍♂️ -->
+            <rect x="148" y="16" width="60" height="42" rx="14" fill="#ffffff" stroke="#000" stroke-width="3.5"/>
+            <polygon points="154,54 142,66 166,56" fill="#ffffff" stroke="#000" stroke-width="3"/>
+            <text x="178" y="45" text-anchor="middle" font-size="26">🤷‍♂️</text>
+            <!-- Plaid Flannel Button-Up -->
+            <path d="M36 220 C44 154 68 144 106 144 C144 144 168 154 176 220 Z" fill="#d97706" stroke="#000" stroke-width="4.5"/>
+            <line x1="76" y1="148" x2="72" y2="220" stroke="#78350f" stroke-width="4"/>
+            <line x1="106" y1="146" x2="106" y2="220" stroke="#000" stroke-width="3"/>
+            <line x1="136" y1="148" x2="140" y2="220" stroke="#78350f" stroke-width="4"/>
+            <line x1="42" y1="180" x2="170" y2="180" stroke="#fef3c7" stroke-width="3" opacity="0.6"/>
+            <!-- Tall Narrow Face & Dark Side-Parted Hair -->
+            <ellipse cx="106" cy="90" rx="35" ry="46" fill="#f3c59f" stroke="#000" stroke-width="4.5"/>
+            <path d="M71 74 C68 34 88 24 108 24 C130 24 142 36 141 74 C132 52 118 46 102 48 C86 50 76 58 71 74 Z" fill="#1f1612" stroke="#000" stroke-width="4"/>
+            <circle cx="90" cy="84" r="4.2" fill="#000"/><circle cx="122" cy="84" r="4.2" fill="#000"/>
+            <path d="M90 112 Q106 122 122 112" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+            <!-- Dramatic Shrugging Hands -->
+            <g transform="translate(32, 152) rotate(-18)">
+              <ellipse cx="0" cy="0" rx="20" ry="12" fill="#f3c59f" stroke="#000" stroke-width="4"/>
+              <line x1="-12" y1="-9" x2="-16" y2="-20" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="-2" y1="-11" x2="-3" y2="-22" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="8" y1="-10" x2="10" y2="-21" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+            </g>
+            <g transform="translate(182, 152) rotate(18)">
+              <ellipse cx="0" cy="0" rx="20" ry="12" fill="#f3c59f" stroke="#000" stroke-width="4"/>
+              <line x1="-8" y1="-10" x2="-10" y2="-21" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="2" y1="-11" x2="3" y2="-22" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="12" y1="-9" x2="16" y2="-20" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+            </g>
+          </svg>`;
+
+        /* SETH — ISuck@FF */
+        case 'seth':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#ccfbf1"/>
+            <!-- Teal Tee -->
+            <path d="M22 220 C30 152 58 142 104 142 C150 142 178 152 186 220 Z" fill="#0d9488" stroke="#000" stroke-width="4.5"/>
+            <!-- Head -->
+            <ellipse cx="104" cy="90" rx="40" ry="44" fill="#f3c59f" stroke="#000" stroke-width="4.5"/>
+            <!-- Thick Dark Beard -->
+            <path d="M64 88 C64 134 82 142 104 142 C126 142 144 134 144 88 C136 106 126 112 104 112 C82 112 72 106 64 88 Z" fill="#291d16" stroke="#000" stroke-width="4"/>
+            <path d="M84 110 Q104 126 124 110 Z" fill="#fff" stroke="#000" stroke-width="3"/>
+            <!-- Grey-and-Black Trucker Cap -->
+            <path d="M62 66 C64 28 84 20 104 20 C124 20 144 28 146 66 Z" fill="#9ca3af" stroke="#000" stroke-width="4.5"/>
+            <path d="M56 66 Q104 54 152 66 L144 74 Q104 62 64 74 Z" fill="#111827" stroke="#000" stroke-width="4"/>
+            <!-- Dark Wraparound Sunglasses -->
+            <path d="M66 72 Q104 68 142 72 L138 92 Q118 96 108 84 L100 84 Q90 96 70 92 Z" fill="#090d16" stroke="#000" stroke-width="3.5"/>
+            <!-- Cardboard Sign reading I SUCK @ FF -->
+            <g transform="translate(132, 166) rotate(-8)">
+              <rect x="-54" y="-26" width="108" height="54" rx="4" fill="#d6b483" stroke="#000" stroke-width="4"/>
+              <text x="0" y="-2" text-anchor="middle" font-family="Bangers" font-size="22" fill="#111827">I SUCK</text>
+              <text x="0" y="20" text-anchor="middle" font-family="Bangers" font-size="22" fill="#dc2626">@ FF</text>
+            </g>
+          </svg>`;
+
+        /* KYLE — Horseshoe */
+        case 'kyle':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#fef08a"/>
+            <!-- Grey Tee -->
+            <path d="M26 220 C34 152 62 142 110 142 C158 142 186 152 194 220 Z" fill="#4b5563" stroke="#000" stroke-width="4.5"/>
+            <!-- Head -->
+            <ellipse cx="110" cy="84" rx="39" ry="43" fill="#f3c59f" stroke="#000" stroke-width="4.5"/>
+            <!-- Swept-Back Brown Hair -->
+            <path d="M71 66 C69 28 90 18 114 18 C138 18 152 30 148 64 C138 44 124 38 108 40 C92 42 78 50 71 66 Z" fill="#4a2e1b" stroke="#000" stroke-width="4"/>
+            <!-- Sandy Trimmed Beard -->
+            <path d="M72 86 C72 124 90 130 110 130 C130 130 148 124 148 86 C140 102 128 106 110 106 C92 106 80 102 72 86 Z" fill="#9a7352" stroke="#000" stroke-width="3"/>
+            <!-- Bright Blue Eyes & Smile -->
+            <circle cx="93" cy="76" r="5" fill="#2563eb"/><circle cx="93" cy="76" r="2" fill="#000"/>
+            <circle cx="127" cy="76" r="5" fill="#2563eb"/><circle cx="127" cy="76" r="2" fill="#000"/>
+            <path d="M91 102 Q110 120 129 102 Z" fill="#fff" stroke="#000" stroke-width="3"/>
+            <!-- Giant Shiny Gold Horseshoe gripped in front -->
+            <path d="M74 142 C74 198 146 198 146 142 L130 142 C130 180 90 180 90 142 Z" fill="#facc15" stroke="#000" stroke-width="4.5"/>
+            <circle cx="68" cy="154" r="11" fill="#f3c59f" stroke="#000" stroke-width="3.5"/>
+            <circle cx="152" cy="154" r="11" fill="#f3c59f" stroke="#000" stroke-width="3.5"/>
+          </svg>`;
+
+        /* MIKE — The Legacy */
+        case 'mike':
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#fee2e2"/>
+            <!-- Speech Bubble: "I used to be a champion!" -->
+            <rect x="8" y="8" width="128" height="46" rx="14" fill="#ffffff" stroke="#000" stroke-width="3.5"/>
+            <polygon points="82,54 96,68 102,54" fill="#ffffff" stroke="#000" stroke-width="3"/>
+            <text x="72" y="28" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="13" fill="#000">I used to be</text>
+            <text x="72" y="45" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="13" fill="#dc2626">a champion!</text>
+            <!-- Dark Navy & Crimson Hoodie / Basketball Warmup -->
+            <path d="M36 220 C44 156 72 146 118 146 C164 146 192 156 200 220 Z" fill="#1e3a8a" stroke="#000" stroke-width="4.5"/>
+            <path d="M92 148 L118 178 L144 148" fill="#dc2626" stroke="#000" stroke-width="3.5"/>
+            <!-- Head -->
+            <ellipse cx="122" cy="96" rx="39" ry="43" fill="#f3c59f" stroke="#000" stroke-width="4.5"/>
+            <!-- Trimmed Dark Beard -->
+            <path d="M84 98 C84 136 102 144 122 144 C142 144 160 136 160 98 C152 114 140 118 122 118 C104 118 92 114 84 98 Z" fill="#291d16" stroke="#000" stroke-width="3.5"/>
+            <path d="M104 118 Q122 128 140 118" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round"/>
+            <!-- Navy Detroit 'D' Cap -->
+            <path d="M80 72 C82 32 102 24 122 24 C142 24 162 32 164 72 Z" fill="#0f172a" stroke="#000" stroke-width="4.5"/>
+            <path d="M74 72 Q122 60 170 72 L162 80 Q122 68 82 80 Z" fill="#1e293b" stroke="#000" stroke-width="4"/>
+            <text x="122" y="54" text-anchor="middle" font-family="Georgia, serif" font-weight="bold" font-size="24" fill="#fff">D</text>
+            <!-- Dark Rectangular Sunglasses -->
+            <rect x="85" y="79" width="33" height="20" rx="4" fill="#090d16" stroke="#000" stroke-width="3.5"/>
+            <rect x="126" y="79" width="33" height="20" rx="4" fill="#090d16" stroke="#000" stroke-width="3.5"/>
+            <line x1="118" y1="87" x2="126" y2="87" stroke="#000" stroke-width="4"/>
+          </svg>`;
+
+        /* DANNY — Kimbo slice */
+        case 'danny':
+        default:
+          return `<svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <rect width="220" height="220" fill="#dcfce7"/>
+            <!-- Cartoon White Toilet Bowl on Right -->
+            <g transform="translate(154, 146)">
+              <rect x="18" y="-34" width="24" height="44" rx="4" fill="#ffffff" stroke="#000" stroke-width="4"/>
+              <ellipse cx="0" cy="14" rx="34" ry="18" fill="#ffffff" stroke="#000" stroke-width="4"/>
+              <ellipse cx="0" cy="14" rx="22" ry="10" fill="#38bdf8" stroke="#000" stroke-width="2.5"/>
+              <path d="M-24 22 L-16 56 L18 56 L26 22 Z" fill="#e2e8f0" stroke="#000" stroke-width="4"/>
+            </g>
+            <!-- White Martial Arts Gi sliding headfirst toward Toilet -->
+            <g transform="translate(88, 150) rotate(-14)">
+              <rect x="-54" y="-20" width="96" height="42" rx="10" fill="#ffffff" stroke="#000" stroke-width="4"/>
+              <rect x="-6" y="-22" width="12" height="46" fill="#111827" stroke="#000" stroke-width="3"/>
+              <text x="-30" y="0" text-anchor="middle" font-family="Bangers" font-size="11" fill="#dc2626">KIMBO</text>
+              <text x="-30" y="12" text-anchor="middle" font-family="Bangers" font-size="11" fill="#dc2626">SLICE</text>
+            </g>
+            <!-- Danny's Head & Full Dark Beard -->
+            <ellipse cx="52" cy="118" rx="30" ry="33" fill="#f3c59f" stroke="#000" stroke-width="4"/>
+            <path d="M22 104 C22 76 38 70 52 70 C66 70 82 76 82 104 C74 88 64 84 52 84 C40 84 30 88 22 104 Z" fill="#1f1612" stroke="#000" stroke-width="3.5"/>
+            <path d="M23 118 C23 148 36 154 52 154 C68 154 81 148 81 118 C74 132 64 136 52 136 C40 136 30 132 23 118 Z" fill="#1f1612" stroke="#000" stroke-width="3.5"/>
+            <circle cx="42" cy="112" r="3.5" fill="#000"/><circle cx="62" cy="112" r="3.5" fill="#000"/>
+            <path d="M38 130 Q52 142 66 130 Z" fill="#fff" stroke="#000" stroke-width="2.5"/>
+          </svg>`;
+      }
+    }
+
+    function escapeHTML(str) {
+      return String(str || '').replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+    }
+
+    /* ========================================================================
+       4. LIVE SLEEPER API DATA (LEAGUE ID: 1357786733483151360)
+    ========================================================================= */
+    const LEAGUE_ID = '1357786733483151360';
+
+    const LeagueState = {
+      isLive: false,
+      leagueName: 'ABND',
+      season: '2025',
+      totalTeams: 10,
+      playoffTeams: 6,
+      currentWeek: 10,
+      selectedWeek: 10,
+      teams: [],
+      matchups: []
+    };
+
+    function getFallbackTeams() {
+      return [
+        { rosterId: 1, teamName: 'Italy America FC', managerName: 'Tony', wins: 8, losses: 2, ties: 0, pf: 1348.6, pa: 1088.2, key: 'tony' },
+        { rosterId: 2, teamName: 'Waffle Stomps', managerName: 'Bryan', wins: 6, losses: 4, ties: 0, pf: 1236.4, pa: 1142.0, key: 'bryan' },
+        { rosterId: 3, teamName: 'Bye Week', managerName: 'Jason', wins: 6, losses: 4, ties: 0, pf: 1210.8, pa: 1151.2, key: 'jason' },
+        { rosterId: 4, teamName: 'Raging Pandas', managerName: 'Kevin', wins: 6, losses: 4, ties: 0, pf: 1198.2, pa: 1160.4, key: 'kevin' },
+        { rosterId: 5, teamName: "Tuten in Boston's Fields", managerName: 'Matt', wins: 5, losses: 5, ties: 0, pf: 1178.4, pa: 1154.8, key: 'matt' },
+        { rosterId: 6, teamName: '🤷‍♂️', managerName: 'Manny', wins: 5, losses: 5, ties: 0, pf: 1152.0, pa: 1166.2, key: 'manny' },
+        { rosterId: 7, teamName: 'ISuck@FF', managerName: 'Seth', wins: 4, losses: 6, ties: 0, pf: 1124.6, pa: 1188.0, key: 'seth' },
+        { rosterId: 8, teamName: 'Horseshoe', managerName: 'Kyle', wins: 4, losses: 6, ties: 0, pf: 1118.2, pa: 1175.4, key: 'kyle' },
+        { rosterId: 9, teamName: 'The Legacy', managerName: 'Mike', wins: 4, losses: 6, ties: 0, pf: 1094.8, pa: 1192.6, key: 'mike' },
+        { rosterId: 10, teamName: 'Kimbo slice', managerName: 'Danny', wins: 2, losses: 8, ties: 0, pf: 1012.4, pa: 1255.6, key: 'danny' }
+      ];
+    }
+
+    function getFallbackMatchups(week) {
+      const teams = LeagueState.teams.length ? LeagueState.teams : getFallbackTeams();
+      const pairs = [[0, 8], [4, 7], [1, 3], [2, 5], [6, 9]];
+      return pairs.map(([aIdx, bIdx], idx) => {
+        const a = teams[aIdx % teams.length];
+        const b = teams[bIdx % teams.length];
+        const ptsA = Number((((week * 31 + a.rosterId * 17) % 54) + 92 + ((week + a.rosterId) % 9) * 0.4).toFixed(2));
+        const ptsB = Number((((week * 29 + b.rosterId * 23) % 54) + 89 + ((week + b.rosterId) % 9) * 0.3).toFixed(2));
+        return { matchupId: idx + 1, teamA: a, pointsA: ptsA, teamB: b, pointsB: ptsB };
+      });
+    }
+
+    function matchManagerKey(teamName, managerName, rosterId) {
+      const text = `${teamName || ''} ${managerName || ''}`.toLowerCase();
+      for (const prof of Object.values(MANAGER_PROFILES)) {
+        if (prof.keywords.some(kw => text.includes(kw))) return prof.key;
+      }
+      return MANAGER_KEYS[(Math.max(1, Number(rosterId)) - 1) % MANAGER_KEYS.length];
+    }
+
+    function setApiPill(live, text) {
+      const dot = document.getElementById('api-dot');
+      const full = document.getElementById('api-text');
+      const short = document.getElementById('api-text-short');
+      const badge = document.getElementById('standings-source-badge');
+
+      if (live) {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-turf live-dot';
+        full.textContent = text || 'LIVE SLEEPER API';
+        short.textContent = 'LIVE';
+        badge.textContent = '● LIVE SLEEPER API';
+        badge.className = 'text-xs font-bold uppercase px-3 py-1 rounded-lg bg-turf text-white border-2 border-black';
+      } else {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-varsityGold';
+        full.textContent = text || 'DEMO MODE';
+        short.textContent = 'DEMO';
+        badge.textContent = '● MEASURING STICK DEMO';
+        badge.className = 'text-xs font-bold uppercase px-3 py-1 rounded-lg bg-varsityGold text-black border-2 border-black';
+      }
+    }
+
+    async function fetchSleeperData(manual = false) {
+      if (manual) {
+        SoundFX.click();
+        setApiPill(false, 'SYNCING...');
+      }
+      try {
+        const [stateRes, leagueRes, usersRes, rostersRes] = await Promise.all([
+          fetch('https://api.sleeper.app/v1/state/nfl'),
+          fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}`),
+          fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/users`),
+          fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/rosters`)
+        ]);
+
+        if (!leagueRes.ok || !usersRes.ok || !rostersRes.ok) throw new Error('Sleeper HTTP Error');
+
+        const nflState = stateRes.ok ? await stateRes.json() : { week: 10, display_week: 10 };
+        const league = await leagueRes.json();
+        const users = await usersRes.json();
+        const rosters = await rostersRes.json();
+
+        if (!league || !Array.isArray(rosters) || rosters.length === 0) throw new Error('Invalid Sleeper Payload');
+
+        const userMap = {};
+        (users || []).forEach(u => { userMap[u.user_id] = u; });
+
+        const mapped = rosters.map((r, i) => {
+          const u = userMap[r.owner_id] || {};
+          const rawTeam = (u.metadata && u.metadata.team_name) || u.display_name || `Team ${r.roster_id || i + 1}`;
+          const rawMgr = u.display_name || `Manager ${r.roster_id || i + 1}`;
+          const key = matchManagerKey(rawTeam, rawMgr, r.roster_id || i + 1);
+          const prof = MANAGER_PROFILES[key];
+          const s = r.settings || {};
+          const pf = Number(((s.fpts || 0) + (s.fpts_decimal || 0) / 100).toFixed(2));
+          const pa = Number(((s.fpts_against || 0) + (s.fpts_against_decimal || 0) / 100).toFixed(2));
+          return {
+            rosterId: r.roster_id,
+            teamName: (u.metadata && u.metadata.team_name) ? u.metadata.team_name : (prof ? prof.team : rawTeam),
+            managerName: prof ? prof.manager : rawMgr,
+            wins: s.wins || 0,
+            losses: s.losses || 0,
+            ties: s.ties || 0,
+            pf,
+            pa,
+            key
+          };
+        });
+
+        mapped.sort((a, b) => (b.wins - a.wins) || (b.ties - a.ties) || (b.pf - a.pf));
+
+        const wk = Math.max(1, Math.min(17, Number(nflState.display_week || nflState.week || league.settings?.leg || 10)));
+
+        LeagueState.isLive = true;
+        LeagueState.leagueName = league.name || 'ABND';
+        LeagueState.season = league.season || '2025';
+        LeagueState.totalTeams = league.total_rosters || mapped.length;
+        LeagueState.playoffTeams = league.settings?.playoff_teams || 6;
+        LeagueState.currentWeek = wk;
+        LeagueState.selectedWeek = wk;
+        LeagueState.teams = mapped;
+
+        setApiPill(true, 'LIVE SLEEPER API');
+        populateWeekDropdown(wk);
+        await fetchSleeperMatchups(wk);
+        renderAllViews();
+        if (manual) showToast(`Synced live Sleeper data for ${LeagueState.leagueName}!`, 'green');
+      } catch (err) {
+        LeagueState.isLive = false;
+        LeagueState.leagueName = 'ABND';
+        LeagueState.season = '2025';
+        LeagueState.totalTeams = 10;
+        LeagueState.playoffTeams = 6;
+        LeagueState.currentWeek = 10;
+        LeagueState.selectedWeek = 10;
+        LeagueState.teams = getFallbackTeams();
+        LeagueState.matchups = getFallbackMatchups(10);
+
+        setApiPill(false, 'DEMO MODE');
+        populateWeekDropdown(10);
+        renderAllViews();
+        if (manual) showToast('Sleeper API unreachable — loaded ABND Measuring Stick demo standings!', 'gold');
+      }
+    }
+
+    async function fetchSleeperMatchups(week) {
+      LeagueState.selectedWeek = Number(week);
+      if (!LeagueState.isLive) {
+        LeagueState.matchups = getFallbackMatchups(LeagueState.selectedWeek);
+        renderMatchups();
+        return;
+      }
+
+      const listEl = document.getElementById('matchups-list');
+      listEl.innerHTML = `<div class="text-center py-8 font-bold text-slate-600 animate-pulse">Loading Week ${week} matchups...</div>`;
+
+      try {
+        const res = await fetch(`https://api.sleeper.app/v1/league/${LEAGUE_ID}/matchups/${week}`);
+        if (!res.ok) throw new Error('Matchup HTTP Error');
+        const data = await res.json();
+        if (!Array.isArray(data) || !data.length) {
+          LeagueState.matchups = [];
+          renderMatchups();
+          return;
+        }
+
+        const byRoster = {};
+        LeagueState.teams.forEach(t => { byRoster[t.rosterId] = t; });
+
+        const groups = {};
+        data.forEach(item => {
+          if (!item.matchup_id) return;
+          if (!groups[item.matchup_id]) groups[item.matchup_id] = [];
+          groups[item.matchup_id].push(item);
+        });
+
+        LeagueState.matchups = Object.keys(groups).sort((a, b) => Number(a) - Number(b)).map(id => {
+          const [a, b] = groups[id];
+          return {
+            matchupId: id,
+            teamA: a ? (byRoster[a.roster_id] || { teamName: `Team ${a.roster_id}`, managerName: '', key: matchManagerKey('', '', a.roster_id) }) : null,
+            pointsA: a ? Number((a.points || 0).toFixed(2)) : 0,
+            teamB: b ? (byRoster[b.roster_id] || { teamName: `Team ${b.roster_id}`, managerName: '', key: matchManagerKey('', '', b.roster_id) }) : null,
+            pointsB: b ? Number((b.points || 0).toFixed(2)) : 0
+          };
+        }).filter(m => m.teamA && m.teamB);
+
+        renderMatchups();
+      } catch (e) {
+        LeagueState.matchups = getFallbackMatchups(LeagueState.selectedWeek);
+        renderMatchups();
+      }
+    }
+
+    function populateWeekDropdown(selected) {
+      const sel = document.getElementById('week-select');
+      sel.innerHTML = '';
+      for (let w = 1; w <= 17; w++) {
+        const opt = document.createElement('option');
+        opt.value = w;
+        opt.textContent = `Week ${w}${w === LeagueState.currentWeek ? ' (Live)' : ''}`;
+        if (w === Number(selected)) opt.selected = true;
+        sel.appendChild(opt);
+      }
+    }
+
+    function handleWeekChange(val) {
+      SoundFX.click();
+      fetchSleeperMatchups(Number(val));
+    }
+
+    /* ========================================================================
+       5. RENDER STANDINGS, MATCHUPS, CARICATURE GALLERY & LORE
+    ========================================================================= */
+    function renderAllViews() {
+      document.getElementById('hero-league-title').textContent = `${LeagueState.leagueName.toUpperCase()} MEASURING STICK HQ`;
+      document.getElementById('badge-season').textContent = `SEASON ${LeagueState.season}`;
+      document.getElementById('badge-teams').textContent = `${LeagueState.totalTeams} TEAMS • TOP ${LeagueState.playoffTeams} PLAYOFFS`;
+      document.getElementById('badge-week').textContent = `WEEK ${LeagueState.currentWeek}`;
+
+      renderStandingsTable();
+      renderMatchups();
+      renderCaricatureCards();
+      renderLoreSection();
+    }
+
+    function renderStandingsTable() {
+      const tbody = document.getElementById('standings-body');
+      tbody.innerHTML = '';
+      const cutline = LeagueState.playoffTeams || 6;
+
+      LeagueState.teams.forEach((t, i) => {
+        const rank = i + 1;
+        const isFirst = rank === 1;
+        const inPlayoffs = rank <= cutline;
+
+        const tr = document.createElement('tr');
+        tr.className = isFirst ? 'bg-varsityGold/25' : 'hover:bg-varsityGold/10 transition-colors';
+        tr.innerHTML = `
+          <td class="py-3 px-3 text-center font-comic text-2xl">
+            ${isFirst
+              ? `<span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-varsityGold text-black border-3 border-black shadow-[2px_2px_0_#000]">👑</span>`
+              : `<span class="${inPlayoffs ? 'text-turf' : 'text-slate-500'}">${rank}</span>`
+            }
+          </td>
+          <td class="py-3 px-3">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full overflow-hidden border-3 border-black bg-white shrink-0 shadow-[2px_2px_0_#000]">
+                ${getManagerComicSVG(t.key)}
+              </div>
+              <div class="min-w-0">
+                <div class="font-bold text-black truncate flex items-center gap-1.5">
+                  <span class="truncate">${escapeHTML(t.teamName)}</span>
+                  ${isFirst ? `<span class="text-[10px] font-bold bg-crimson text-white px-1.5 py-0.5 rounded border border-black shrink-0">#1 SEED</span>` : ''}
+                </div>
+                <div class="text-xs font-semibold text-slate-600 truncate">Manager: ${escapeHTML(t.managerName)}</div>
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-3 text-center font-comic text-xl text-black whitespace-nowrap">
+            ${t.wins}-${t.losses}${t.ties ? `-${t.ties}` : ''}
+          </td>
+          <td class="py-3 px-3 text-right font-bold text-turf">${t.pf.toFixed(1)}</td>
+          <td class="py-3 px-3 text-right font-semibold text-slate-600 hidden sm:table-cell">${t.pa.toFixed(1)}</td>
+        `;
+        tbody.appendChild(tr);
+
+        if (rank === cutline && i < LeagueState.teams.length - 1) {
+          const cutTr = document.createElement('tr');
+          cutTr.innerHTML = `
+            <td colspan="5" class="py-2 px-3 bg-turf/15 border-y-3 border-dashed border-turf">
+              <div class="flex items-center justify-center gap-2 text-xs font-extrabold uppercase tracking-wider text-turf">
+                <span>▲ TOP ${cutline} PLAYOFF CUTLINE ▲</span>
+                <span class="hidden sm:inline text-black">•</span>
+                <span class="hidden sm:inline text-crimson">▼ TOILET BOWL DANGER ZONE ▼</span>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(cutTr);
+        }
+      });
+    }
+
+    function renderMatchups() {
+      const container = document.getElementById('matchups-list');
+      if (!LeagueState.matchups.length) {
+        container.innerHTML = `
+          <div class="comic-box p-6 text-center space-y-2">
+            <div class="text-3xl">🏈</div>
+            <div class="font-comic text-2xl text-electricNavy">NO MATCHUPS FOR WEEK ${LeagueState.selectedWeek}</div>
+            <p class="text-xs text-slate-600 font-semibold">Select another week from the dropdown above.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = LeagueState.matchups.map(m => {
+        const aWin = m.pointsA > m.pointsB;
+        const bWin = m.pointsB > m.pointsA;
+        const isNashty = (m.teamA.key === 'matt' && m.teamB.key === 'kyle') || (m.teamA.key === 'kyle' && m.teamB.key === 'matt');
+
+        return `
+          <div class="bg-white border-3 border-black rounded-xl p-3 shadow-[4px_4px_0_#000] space-y-2">
+            ${isNashty ? `<div class="bg-crimson text-white text-[11px] font-bold uppercase text-center py-0.5 rounded border-2 border-black">⚔️ THE NASHTY BOWL ⚔️</div>` : ''}
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-black shrink-0">${getManagerComicSVG(m.teamA.key)}</div>
+                <div class="min-w-0">
+                  <div class="text-sm font-bold text-black truncate">${escapeHTML(m.teamA.teamName)}</div>
+                  <div class="text-[11px] font-semibold text-slate-600 truncate">${escapeHTML(m.teamA.managerName)}</div>
+                </div>
+              </div>
+              <div class="font-comic text-2xl px-2.5 py-0.5 rounded-lg border-2 border-black ${aWin ? 'bg-turf text-white' : 'bg-slate-200 text-black'}">
+                ${m.pointsA.toFixed(2)}
+              </div>
+            </div>
+            <div class="border-t-2 border-black/10"></div>
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-black shrink-0">${getManagerComicSVG(m.teamB.key)}</div>
+                <div class="min-w-0">
+                  <div class="text-sm font-bold text-black truncate">${escapeHTML(m.teamB.teamName)}</div>
+                  <div class="text-[11px] font-semibold text-slate-600 truncate">${escapeHTML(m.teamB.managerName)}</div>
+                </div>
+              </div>
+              <div class="font-comic text-2xl px-2.5 py-0.5 rounded-lg border-2 border-black ${bWin ? 'bg-turf text-white' : 'bg-slate-200 text-black'}">
+                ${m.pointsB.toFixed(2)}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderCaricatureCards() {
+      const grid = document.getElementById('caricatures-grid');
+      const byKey = {};
+      LeagueState.teams.forEach((t, idx) => { byKey[t.key] = { ...t, rank: idx + 1 }; });
+
+      grid.innerHTML = MANAGER_KEYS.map(k => {
+        const prof = MANAGER_PROFILES[k];
+        const live = byKey[k];
+        const teamName = live ? live.teamName : prof.team;
+        const record = live ? `${live.wins}-${live.losses}` : 'ABND';
+        const rank = live ? `#${live.rank}` : 'ABND';
+
+        return `
+          <div class="comic-box overflow-hidden flex flex-col">
+            <div class="relative h-56 border-b-4 border-black bg-white overflow-hidden">
+              ${getManagerComicSVG(k)}
+              <span class="absolute top-2.5 left-2.5 ${prof.tagStyle} font-bold text-[11px] uppercase px-2.5 py-1 rounded-lg border-2 border-black shadow-[2px_2px_0_#000]">
+                ${prof.tag}
+              </span>
+              <span class="absolute top-2.5 right-2.5 bg-navy text-varsityGold font-comic text-lg px-2.5 py-0.5 rounded-lg border-2 border-black">
+                ${rank} • ${record}
+              </span>
+            </div>
+
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3 bg-comicCard">
+              <div class="space-y-1.5">
+                <h3 class="font-comic text-2xl text-electricNavy leading-tight">${escapeHTML(teamName)}</h3>
+                <div class="text-xs font-extrabold uppercase text-crimson">${escapeHTML(prof.manager)} • ${escapeHTML(prof.title)}</div>
+                <p class="text-xs text-slate-700 font-medium leading-relaxed">${escapeHTML(prof.desc)}</p>
+                <div class="bg-comicPaper text-black text-xs font-bold italic px-3 py-1.5 rounded-lg border-2 border-black">
+                  ${escapeHTML(prof.quote)}
+                </div>
+              </div>
+
+              ${k === 'mike' ? `
+                <button onclick="switchTab('arcade', 'basketball')" class="comic-btn w-full py-2 bg-crimson text-white font-comic text-xl tracking-wide">
+                  🏀 PLAY AS MIKE IN ARCADE
+                </button>
+              ` : ''}
+              ${k === 'kyle' ? `
+                <button onclick="switchTab('arcade', 'goat')" class="comic-btn w-full py-2 bg-varsityGold text-black font-comic text-xl tracking-wide">
+                  📣 PLAY AS KYLE IN ARCADE
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderLoreSection() {
+      const matt = LeagueState.teams.find(t => t.key === 'matt') || { teamName: "Tuten in Boston's Fields", managerName: 'Matt', wins: 5, losses: 5, pf: 1178.4, key: 'matt' };
+      const kyle = LeagueState.teams.find(t => t.key === 'kyle') || { teamName: 'Horseshoe', managerName: 'Kyle', wins: 4, losses: 6, pf: 1118.2, key: 'kyle' };
+
+      document.getElementById('lore-matt-avatar').innerHTML = getManagerComicSVG('matt');
+      document.getElementById('lore-kyle-avatar').innerHTML = getManagerComicSVG('kyle');
+      document.getElementById('rocky-seth').innerHTML = getManagerComicSVG('seth');
+      document.getElementById('rocky-kyle').innerHTML = getManagerComicSVG('kyle');
+      document.getElementById('rocky-mike').innerHTML = getManagerComicSVG('mike');
+
+      document.getElementById('lore-matt-team').textContent = matt.teamName;
+      document.getElementById('lore-matt-mgr').textContent = matt.managerName;
+      document.getElementById('lore-matt-rec').textContent = `${matt.wins}-${matt.losses}`;
+      document.getElementById('lore-matt-pf').textContent = `${matt.pf.toFixed(1)} PF`;
+
+      document.getElementById('lore-kyle-team').textContent = kyle.teamName;
+      document.getElementById('lore-kyle-mgr').textContent = kyle.managerName;
+      document.getElementById('lore-kyle-rec').textContent = `${kyle.wins}-${kyle.losses}`;
+      document.getElementById('lore-kyle-pf').textContent = `${kyle.pf.toFixed(1)} PF`;
+
+      const verdict = document.getElementById('nashty-verdict');
+      if (matt.wins > kyle.wins || (matt.wins === kyle.wins && matt.pf >= kyle.pf)) {
+        verdict.textContent = `🔥 ${matt.teamName} currently leads the Nashty Bowl! Kyle is polishing his giant golden horseshoe!`;
+      } else {
+        verdict.textContent = `🐴 ${kyle.teamName} currently owns the Nashty Bowl! Matt is rewriting his Boston playbook!`;
+      }
+    }
+
+    // Interactive Lore Triggers
+    let camShakeTimer = null;
+    function triggerDadCam() {
+      const box = document.getElementById('dad-cam-box');
+      const cap = document.getElementById('dad-cam-caption');
+      SoundFX.shake();
+      box.classList.add('shaking-cam');
+      cap.textContent = '"Come on Michael! Hold the camera steady for Dad!"';
+      cap.classList.add('bg-varsityGold');
+      clearTimeout(camShakeTimer);
+      camShakeTimer = setTimeout(() => {
+        box.classList.remove('shaking-cam');
+        cap.classList.remove('bg-varsityGold');
+      }, 2800);
+    }
+
+    let rockyAnimTimer = null;
+    function triggerRockyMontage() {
+      const grid = document.getElementById('rocky-grid');
+      const banner = document.getElementById('rocky-callout');
+      SoundFX.horns();
+      grid.classList.add('rocky-pumping');
+      banner.classList.remove('hidden');
+      clearTimeout(rockyAnimTimer);
+      rockyAnimTimer = setTimeout(() => {
+        grid.classList.remove('rocky-pumping');
+      }, 3000);
+    }
+
+    /* ========================================================================
+       6. TAB & ARCADE CABINET NAVIGATION
+    ========================================================================= */
+    let currentTab = 'hq';
+    let currentArcade = 'basketball';
+
+    function switchTab(tab, game = null) {
+      SoundFX.click();
+      currentTab = tab;
+
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-${tab}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === tab;
+        btn.classList.toggle('bg-varsityGold', active);
+        btn.classList.toggle('bg-comicPaper', !active);
+      });
+
+      if (tab === 'arcade') {
+        chooseArcadeGame(game || currentArcade);
+      } else {
+        BasketballGame.setActive(false);
+        GoatGame.setActive(false);
+      }
+    }
+
+    function chooseArcadeGame(game) {
+      currentArcade = game;
+      const pBB = document.getElementById('panel-basketball');
+      const pGoat = document.getElementById('panel-goat');
+      const bBB = document.getElementById('btn-choose-bb');
+      const bGoat = document.getElementById('btn-choose-goat');
+
+      if (game === 'basketball') {
+        pBB.classList.remove('hidden');
+        pGoat.classList.add('hidden');
+        bBB.classList.add('bg-varsityGold');
+        bBB.classList.remove('bg-comicPaper');
+        bGoat.classList.add('bg-comicPaper');
+        bGoat.classList.remove('bg-varsityGold');
+
+        GoatGame.setActive(false);
+        BasketballGame.setActive(true);
+      } else {
+        pBB.classList.add('hidden');
+        pGoat.classList.remove('hidden');
+        bGoat.classList.add('bg-varsityGold');
+        bGoat.classList.remove('bg-comicPaper');
+        bBB.classList.add('bg-comicPaper');
+        bBB.classList.remove('bg-varsityGold');
+
+        BasketballGame.setActive(false);
+        GoatGame.setActive(true);
+      }
+    }
+
+    /* ========================================================================
+       7. SHARED CANVAS CARICATURE HEADS FOR ARCADE GAMES (MIKE & KYLE)
+    ========================================================================= */
+    function drawMikeArcadeHead(ctx, cx, cy, r, opts = {}) {
+      const { exhausted = false, blush = 0, egoRatio = 0, dizzy = false, t = 0 } = opts;
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      // Ego overload glow in Game 2
+      if (egoRatio > 0.55) {
+        const alpha = Math.min(0.85, (egoRatio - 0.55) * 2.0);
+        const grad = ctx.createRadialGradient(0, 0, r * 0.6, 0, 0, r * 1.45);
+        grad.addColorStop(0, `rgba(250, 204, 21, ${alpha})`);
+        grad.addColorStop(0.6, `rgba(220, 38, 38, ${alpha * 0.65})`);
+        grad.addColorStop(1, 'rgba(250, 204, 21, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 1.45, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = Math.max(2.5, r * 0.075);
+
+      // Ears
+      ctx.fillStyle = '#eab68d';
+      ctx.beginPath();
+      ctx.ellipse(-r * 0.95, r * 0.04, r * 0.18, r * 0.30, 0, 0, Math.PI * 2);
+      ctx.ellipse(r * 0.95, r * 0.04, r * 0.18, r * 0.30, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Head
+      ctx.fillStyle = exhausted ? '#fca5a5' : (egoRatio > 0.65 ? '#fda4af' : '#f3c59f');
+      ctx.beginPath();
+      ctx.ellipse(0, 0, r * 0.92, r, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Trimmed Dark Beard
+      ctx.fillStyle = '#291d16';
+      ctx.beginPath();
+      ctx.moveTo(-r * 0.86, r * 0.05);
+      ctx.bezierCurveTo(-r * 0.86, r * 0.88, -r * 0.42, r * 1.02, 0, r * 1.02);
+      ctx.bezierCurveTo(r * 0.42, r * 1.02, r * 0.86, r * 0.88, r * 0.86, r * 0.05);
+      ctx.quadraticCurveTo(r * 0.56, r * 0.36, 0, r * 0.38);
+      ctx.quadraticCurveTo(-r * 0.56, r * 0.36, -r * 0.86, r * 0.05);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Flushed Red Cheeks
+      const cheekAlpha = exhausted ? 0.65 : Math.min(0.85, 0.12 + blush * 0.72);
+      ctx.fillStyle = `rgba(220, 38, 38, ${cheekAlpha})`;
+      ctx.beginPath();
+      ctx.ellipse(-r * 0.52, r * 0.14, r * 0.20, r * 0.13, 0, 0, Math.PI * 2);
+      ctx.ellipse(r * 0.52, r * 0.14, r * 0.20, r * 0.13, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Navy Detroit 'D' Cap
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(0, -r * 0.42, r * 0.90, Math.PI, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.roundRect(-r * 0.98, -r * 0.50, r * 1.96, r * 0.22, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `bold ${Math.max(14, Math.round(r * 0.52))}px Georgia, serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('D', 0, -r * 0.76);
+
+      // Dark Rectangular Sunglasses
+      if (dizzy) {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = Math.max(2.5, r * 0.07);
+        [-0.38, 0.38].forEach(side => {
+          const ex = r * side, ey = -r * 0.08, sz = r * 0.16;
+          ctx.beginPath();
+          ctx.moveTo(ex - sz, ey - sz); ctx.lineTo(ex + sz, ey + sz);
+          ctx.moveTo(ex + sz, ey - sz); ctx.lineTo(ex - sz, ey + sz);
+          ctx.stroke();
+        });
+      } else {
+        ctx.fillStyle = '#090d16';
+        ctx.beginPath();
+        ctx.roundRect(-r * 0.76, -r * 0.22, r * 0.68, r * 0.36, 5);
+        ctx.roundRect(r * 0.08, -r * 0.22, r * 0.68, r * 0.36, 5);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-r * 0.08, -r * 0.08);
+        ctx.lineTo(r * 0.08, -r * 0.08);
+        ctx.stroke();
+      }
+
+      // Mouth: Exhausted Gasping vs Cocky Champion Grin
+      if (exhausted) {
+        const gasp = 1 + Math.sin(t * 16) * 0.22;
+        ctx.fillStyle = '#7f1d1d';
+        ctx.beginPath();
+        ctx.ellipse(0, r * 0.56, r * 0.30, r * 0.24 * gasp, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#fb7185';
+        ctx.beginPath();
+        ctx.ellipse(0, r * 0.66, r * 0.18, r * 0.11, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (dizzy) {
+        ctx.beginPath();
+        ctx.moveTo(-r * 0.26, r * 0.52);
+        ctx.quadraticCurveTo(0, r * 0.40, r * 0.26, r * 0.54);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(-r * 0.46, r * 0.38);
+        ctx.quadraticCurveTo(0, r * (egoRatio > 0.6 ? 0.90 : 0.70), r * 0.46, r * 0.38);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function drawKyleArcadeHead(ctx, cx, cy, r, yelling = false) {
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      ctx.fillStyle = '#f3c59f';
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, r * 0.94, r, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Swept-back brown hair
+      ctx.fillStyle = '#4a2e1b';
+      ctx.beginPath();
+      ctx.moveTo(-r * 0.88, -r * 0.30);
+      ctx.bezierCurveTo(-r * 0.92, -r * 1.05, -r * 0.30, -r * 1.15, r * 0.25, -r * 1.10);
+      ctx.bezierCurveTo(r * 0.82, -r * 1.05, r * 0.92, -r * 0.72, r * 0.86, -r * 0.32);
+      ctx.quadraticCurveTo(r * 0.30, -r * 0.62, -r * 0.88, -r * 0.30);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Sandy-brown beard
+      ctx.fillStyle = '#9a7352';
+      ctx.beginPath();
+      ctx.moveTo(-r * 0.86, r * 0.06);
+      ctx.bezierCurveTo(-r * 0.84, r * 0.92, -r * 0.40, r * 1.02, 0, r * 1.02);
+      ctx.bezierCurveTo(r * 0.40, r * 1.02, r * 0.84, r * 0.92, r * 0.86, r * 0.06);
+      ctx.quadraticCurveTo(r * 0.50, r * 0.36, 0, r * 0.36);
+      ctx.quadraticCurveTo(-r * 0.50, r * 0.36, -r * 0.86, r * 0.06);
+      ctx.closePath();
+      ctx.fill();
+
+      // Bright blue eyes
+      ctx.fillStyle = '#2563eb';
+      ctx.beginPath();
+      ctx.arc(-r * 0.34, -r * 0.12, r * 0.14, 0, Math.PI * 2);
+      ctx.arc(r * 0.34, -r * 0.12, r * 0.14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(-r * 0.34, -r * 0.12, r * 0.06, 0, Math.PI * 2);
+      ctx.arc(r * 0.34, -r * 0.12, r * 0.06, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Mouth
+      if (yelling) {
+        ctx.fillStyle = '#7f1d1d';
+        ctx.beginPath();
+        ctx.ellipse(0, r * 0.46, r * 0.34, r * 0.28, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(-r * 0.42, r * 0.34);
+        ctx.quadraticCurveTo(0, r * 0.68, r * 0.42, r * 0.34);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    /* ========================================================================
+       8. GAME 1: THE LEGACY SHOOTOUT (HOLD-TO-CHARGE + 7.0s ENDURANCE REFILL)
+    ========================================================================= */
+    const BasketballGame = (() => {
+      const canvas = document.getElementById('bb-canvas');
+      const ctx = canvas.getContext('2d');
+      let W = 800, H = 500;
+      let active = false;
+      let rafId = null;
+      let lastTs = 0;
+
+      const TARGET_MAKES = 7;
+      const GAME_DURATION = 60.0;
+      const REFILL_SECONDS = 7.0; // Empties to 0% after EVERY shot & takes 7.0s to refill
+
+      const EXHAUST_CAPTIONS = [
+        'MY CALVES ARE CRAMPING!',
+        'CALL A TIMEOUT!',
+        'NEED OXYGEN!',
+        'THIS IS WORSE THAN WAIVERS!',
+        '7 SECONDS IS NOT ENOUGH!'
+      ];
+
+      let st = {
+        phase: 'idle', // 'idle' | 'playing' | 'won' | 'lost'
+        timeLeft: GAME_DURATION,
+        made: 0,
+        shots: 0,
+        endurance: 1.0,
+        refillLeft: 0,
+        charging: false,
+        chargePower: 0,
+        sweetMin: 0.56,
+        sweetMax: 0.74,
+        hoopOffsetY: 0,
+        hoopDir: 1,
+        ball: null,
+        netSwing: 0,
+        rimShake: 0,
+        popups: [],
+        sweat: [],
+        breath: [],
+        captionIdx: 0,
+        captionTimer: 0,
+        pantTimer: 0,
+        readyRing: 0,
+        t: 0
+      };
+
+      function resize() {
+        const stage = document.getElementById('bb-stage');
+        if (!stage) return;
+        const rect = stage.getBoundingClientRect();
+        if (rect.width < 10 || rect.height < 10) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = rect.width;
+        H = rect.height;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        render();
+      }
+
+      function nextSweetSpot() {
+        const center = 0.56 + Math.random() * 0.24;
+        const half = Math.max(0.07, 0.095 - st.made * 0.003);
+        st.sweetMin = center - half;
+        st.sweetMax = center + half;
+      }
+
+      function start() {
+        SoundFX.click();
+        st = {
+          phase: 'playing',
+          timeLeft: GAME_DURATION,
+          made: 0,
+          shots: 0,
+          endurance: 1.0,
+          refillLeft: 0,
+          charging: false,
+          chargePower: 0,
+          sweetMin: 0.56,
+          sweetMax: 0.74,
+          hoopOffsetY: 0,
+          hoopDir: 1,
+          ball: null,
+          netSwing: 0,
+          rimShake: 0,
+          popups: [],
+          sweat: [],
+          breath: [],
+          captionIdx: 0,
+          captionTimer: 0,
+          pantTimer: 0,
+          readyRing: 0.6,
+          t: 0
+        };
+        document.getElementById('bb-overlay').classList.add('hidden');
+        updateUI();
+      }
+
+      function beginCharge() {
+        if (st.phase !== 'playing') return;
+        if (st.endurance < 1.0 || st.ball) {
+          SoundFX.pant();
+          addPopup(W * 0.27, H * 0.44, 'CATCHING BREATH! 🫁', '#dc2626');
+          return;
+        }
+        st.charging = true;
+        st.chargePower = 0.05;
+      }
+
+      function cancelCharge() {
+        if (st.charging) releaseShot();
+      }
+
+      function releaseShot() {
+        if (st.phase !== 'playing' || !st.charging) return;
+        st.charging = false;
+
+        const pwr = st.chargePower;
+        st.chargePower = 0;
+
+        SoundFX.shoot();
+        st.shots++;
+
+        // CRITICAL MECHANIC: Endurance empties to 0% after EVERY shot & takes 7.0 seconds to refill
+        st.endurance = 0;
+        st.refillLeft = REFILL_SECONDS;
+        st.captionIdx = (st.captionIdx + 1) % EXHAUST_CAPTIONS.length;
+        st.captionTimer = 0;
+        st.pantTimer = 0.5;
+
+        const hoopX = W * 0.80;
+        const hoopY = H * 0.34 + st.hoopOffsetY;
+        const startX = W * 0.27;
+        const startY = H * 0.48;
+
+        let outcome = 'brick';
+        let targetX = hoopX;
+        if (pwr >= st.sweetMin && pwr <= st.sweetMax) {
+          outcome = 'swish';
+        } else if (pwr >= st.sweetMin - 0.07 && pwr <= st.sweetMax + 0.07) {
+          outcome = Math.random() < 0.5 ? 'rattle' : 'brick';
+        } else if (pwr < st.sweetMin - 0.07) {
+          outcome = 'short';
+          targetX = hoopX - 58;
+        } else {
+          outcome = 'long';
+          targetX = hoopX + 34;
+        }
+
+        st.ball = {
+          x: startX,
+          y: startY,
+          sx: startX,
+          sy: startY,
+          tx: outcome === 'brick' ? hoopX - 24 : targetX,
+          ty: hoopY,
+          t: 0,
+          dur: 0.74,
+          outcome,
+          stage: 'fly',
+          vx: 0,
+          vy: 0,
+          rot: 0
+        };
+
+        nextSweetSpot();
+        updateUI();
+      }
+
+      function addPopup(x, y, text, color) {
+        st.popups.push({ x, y, text, color, life: 1.2, max: 1.2 });
+      }
+
+      function finishGame(won) {
+        st.phase = won ? 'won' : 'lost';
+        st.charging = false;
+        if (won) SoundFX.fanfare();
+        else SoundFX.buzzer();
+
+        const ov = document.getElementById('bb-overlay');
+        const badge = document.getElementById('bb-ov-badge');
+        badge.textContent = won ? '🏆 LEGACY CHAMPION!' : '🚑 CARDIO COLLAPSE';
+        badge.className = `inline-block font-bold text-xs uppercase px-3 py-1 rounded-full border-2 border-black ${won ? 'bg-turf text-white' : 'bg-crimson text-white'}`;
+        document.getElementById('bb-ov-title').textContent = won
+          ? '7 BUCKETS ON ONE LUNG!'
+          : 'MIKE NEEDS AN OXYGEN TANK!';
+        document.getElementById('bb-ov-desc').textContent = won
+          ? `Unbelievable! Mike drained 7 shots despite 7-second cardio timeouts after every jumper!`
+          : `Mike made ${st.made}/7 shots before his calves cramped up. Hold & release in the green sweet spot right when the Endurance Bar hits 100%!`;
+
+        document.getElementById('bb-ov-stats').classList.remove('hidden');
+        document.getElementById('bb-st-made').textContent = `${st.made}/7`;
+        document.getElementById('bb-st-att').textContent = `${st.shots}`;
+        document.getElementById('bb-st-time').textContent = `${st.timeLeft.toFixed(1)}s`;
+        ov.classList.remove('hidden');
+      }
+
+      function updateUI() {
+        document.getElementById('bb-score-txt').textContent = `${st.made} / ${TARGET_MAKES}`;
+        document.getElementById('bb-time-txt').textContent = `${Math.max(0, st.timeLeft).toFixed(1)}s`;
+        document.getElementById('bb-shots-txt').textContent = `${st.shots}`;
+
+        const pct = Math.round(st.endurance * 100);
+        const bar = document.getElementById('bb-endurance-bar');
+        const txt = document.getElementById('bb-endurance-txt');
+        const btn = document.getElementById('bb-hold-btn');
+
+        bar.style.width = `${pct}%`;
+        if (st.endurance >= 1.0) {
+          bar.className = 'h-full bg-turf';
+          txt.textContent = '100% — READY TO SHOOT!';
+          txt.className = 'text-turf font-extrabold';
+          btn.classList.remove('opacity-55', 'grayscale');
+        } else {
+          bar.className = 'h-full bg-gradient-to-r from-crimson via-orange-500 to-varsityGold';
+          txt.textContent = `EMPTY! REFILLING... ${st.refillLeft.toFixed(1)}s (${pct}%)`;
+          txt.className = 'text-crimson font-extrabold';
+          btn.classList.add('opacity-55', 'grayscale');
+        }
+      }
+
+      function update(dt) {
+        st.t += dt;
+        if (st.netSwing > 0) st.netSwing = Math.max(0, st.netSwing - dt * 3.5);
+        if (st.rimShake > 0) st.rimShake = Math.max(0, st.rimShake - dt * 5);
+        if (st.readyRing > 0) st.readyRing = Math.max(0, st.readyRing - dt * 2.2);
+
+        st.popups = st.popups.filter(p => { p.y -= dt * 44; p.life -= dt; return p.life > 0; });
+        st.sweat = st.sweat.filter(s => { s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 260 * dt; s.life -= dt; return s.life > 0; });
+        st.breath = st.breath.filter(b => { b.x += b.vx * dt; b.y += b.vy * dt; b.r += dt * 16; b.life -= dt; return b.life > 0; });
+
+        if (st.phase !== 'playing') return;
+
+        st.timeLeft -= dt;
+        if (st.timeLeft <= 0) {
+          st.timeLeft = 0;
+          updateUI();
+          finishGame(st.made >= TARGET_MAKES);
+          return;
+        }
+
+        // Moving hoop after 3 makes to keep it challenging but fair
+        if (st.made >= 3) {
+          const speed = 34 + (st.made - 3) * 12;
+          st.hoopOffsetY += st.hoopDir * speed * dt;
+          if (st.hoopOffsetY > 42) { st.hoopOffsetY = 42; st.hoopDir = -1; }
+          if (st.hoopOffsetY < -36) { st.hoopOffsetY = -36; st.hoopDir = 1; }
+        }
+
+        // Charging shot power meter
+        if (st.charging) {
+          st.chargePower += dt * 1.18;
+          if (st.chargePower >= 1.0) {
+            st.chargePower = 1.0;
+            releaseShot();
+          }
+        }
+
+        // 7.0-second Endurance Refill
+        if (st.endurance < 1.0) {
+          st.refillLeft -= dt;
+          if (st.refillLeft <= 0) {
+            st.refillLeft = 0;
+            st.endurance = 1.0;
+            st.readyRing = 1.0;
+            SoundFX.ding();
+            addPopup(W * 0.25, H * 0.35, 'LUNG REFILLED! 🏀', '#16a34a');
+          } else {
+            st.endurance = 1.0 - (st.refillLeft / REFILL_SECONDS);
+            if (Math.random() < dt * 7.5) {
+              st.sweat.push({
+                x: W * 0.25 + (Math.random() - 0.5) * 44,
+                y: H * 0.56 + (Math.random() - 0.5) * 20,
+                vx: (Math.random() - 0.5) * 90,
+                vy: -45 - Math.random() * 60,
+                life: 0.75
+              });
+            }
+            if (Math.random() < dt * 2.8) {
+              st.breath.push({
+                x: W * 0.31,
+                y: H * 0.62,
+                vx: 40 + Math.random() * 20,
+                vy: -12 - Math.random() * 14,
+                r: 8,
+                life: 0.9
+              });
+            }
+            st.pantTimer -= dt;
+            if (st.pantTimer <= 0) {
+              SoundFX.pant();
+              st.pantTimer = 1.15;
+            }
+            st.captionTimer += dt;
+            if (st.captionTimer > 3.1) {
+              st.captionTimer = 0;
+              st.captionIdx = (st.captionIdx + 1) % EXHAUST_CAPTIONS.length;
+            }
+          }
+        }
+
+        // Basketball flight physics
+        if (st.ball) {
+          const b = st.ball;
+          b.rot += dt * 11;
+          if (b.stage === 'fly') {
+            b.t += dt / b.dur;
+            const u = Math.min(1, b.t);
+            const arc = Math.min(H * 0.36, 185);
+            b.x = b.sx + (b.tx - b.sx) * u;
+            b.y = b.sy + (b.ty - b.sy) * u - Math.sin(u * Math.PI) * arc;
+
+            if (u >= 1) {
+              b.stage = 'after';
+              b.afterT = 0;
+              if (b.outcome === 'swish') {
+                SoundFX.swish();
+                st.made++;
+                st.netSwing = 1.0;
+                b.vx = 5;
+                b.vy = 115;
+                addPopup(b.tx - 18, b.ty - 32, 'SWISH! 🔥', '#16a34a');
+              } else if (b.outcome === 'rattle') {
+                SoundFX.rim();
+                setTimeout(() => SoundFX.swish(), 150);
+                st.made++;
+                st.rimShake = 0.85;
+                st.netSwing = 0.85;
+                b.vx = 10;
+                b.vy = 80;
+                addPopup(b.tx - 18, b.ty - 36, 'BANKED IN! 😅', '#facc15');
+              } else {
+                SoundFX.brick();
+                st.rimShake = 1.0;
+                b.vx = b.outcome === 'long' ? 85 : -145;
+                b.vy = -110;
+                addPopup(b.tx - 18, b.ty - 32, b.outcome === 'short' ? 'AIRBALL! 💨' : 'BRICK! 🧱', '#dc2626');
+              }
+
+              if (st.made >= TARGET_MAKES) {
+                setTimeout(() => { if (st.phase === 'playing') finishGame(true); }, 420);
+              }
+            }
+          } else {
+            b.afterT += dt;
+            b.x += b.vx * dt;
+            b.y += b.vy * dt;
+            b.vy += 580 * dt;
+            if (b.y > H * 0.86 || b.afterT > 0.72) st.ball = null;
+          }
+        }
+
+        updateUI();
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, W, H);
+
+        // Arena Backdrop
+        const bg = ctx.createLinearGradient(0, 0, 0, H * 0.72);
+        bg.addColorStop(0, '#0f172a');
+        bg.addColorStop(1, '#1e3a8a');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H * 0.72);
+
+        // Banner
+        ctx.fillStyle = '#facc15';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.roundRect(W * 0.08, H * 0.06, W * 0.32, H * 0.12, 10);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#000';
+        ctx.font = `bold ${Math.max(14, Math.round(W * 0.024))}px Bangers, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('THE LEGACY ARENA', W * 0.24, H * 0.135);
+
+        // Hardwood Court
+        const floorY = H * 0.70;
+        ctx.fillStyle = '#d97706';
+        ctx.fillRect(0, floorY, W, H - floorY);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(0, floorY);
+        ctx.lineTo(W, floorY);
+        ctx.stroke();
+
+        // Hoop & Backboard
+        const shakeX = st.rimShake > 0 ? Math.sin(st.t * 60) * 5 * st.rimShake : 0;
+        const hoopX = W * 0.80 + shakeX;
+        const hoopY = H * 0.34 + st.hoopOffsetY;
+        const boardX = W * 0.86 + shakeX;
+
+        ctx.fillStyle = '#1e293b';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.fillRect(W * 0.90, H * 0.26, 16, floorY - H * 0.26 + 14);
+        ctx.strokeRect(W * 0.90, H * 0.26, 16, floorY - H * 0.26 + 14);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(boardX, hoopY - 62, 14, 86);
+        ctx.strokeRect(boardX, hoopY - 62, 14, 86);
+        ctx.strokeStyle = '#dc2626';
+        ctx.strokeRect(boardX + 2, hoopY - 30, 8, 30);
+
+        // Net
+        const swing = Math.sin(st.t * 18) * 9 * st.netSwing;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.4;
+        const rL = hoopX - 28, rR = hoopX + 28;
+        for (let i = 0; i <= 4; i++) {
+          ctx.beginPath();
+          ctx.moveTo(rL + (i / 4) * 56, hoopY + 3);
+          ctx.lineTo(rL + 9 + (i / 4) * 38 + swing, hoopY + 46);
+          ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.moveTo(rL + 4, hoopY + 18); ctx.lineTo(rR - 4 + swing * 0.5, hoopY + 18);
+        ctx.moveTo(rL + 7, hoopY + 32); ctx.lineTo(rR - 7 + swing * 0.8, hoopY + 32);
+        ctx.stroke();
+
+        // Rim
+        ctx.strokeStyle = '#ea580c';
+        ctx.lineWidth = 6.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(rL, hoopY);
+        ctx.lineTo(boardX, hoopY);
+        ctx.stroke();
+
+        // MIKE CHARACTER (Navy & Gold Legacy Uniform + Detroit 'D' Cap & Shades)
+        const mx = W * 0.25;
+        const fy = H * 0.83;
+        const exhausted = st.phase === 'playing' && st.endurance < 1.0;
+
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(mx, fy + 4, 42, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (exhausted) {
+          // HUNCHED OVER HANDS ON KNEES PANTING POSE
+          const heave = Math.sin(st.t * 13) * 5.5;
+          ctx.fillStyle = '#f3c59f';
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 3;
+          ctx.fillRect(mx - 24, fy - 40, 14, 34); ctx.strokeRect(mx - 24, fy - 40, 14, 34);
+          ctx.fillRect(mx + 8, fy - 40, 14, 34); ctx.strokeRect(mx + 8, fy - 40, 14, 34);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.roundRect(mx - 28, fy - 10, 26, 12, 4);
+          ctx.roundRect(mx + 6, fy - 10, 26, 12, 4);
+          ctx.fill(); ctx.stroke();
+
+          // Basketball Shorts
+          ctx.fillStyle = '#1e3a8a';
+          ctx.beginPath();
+          ctx.roundRect(mx - 30, fy - 72, 58, 36, 8);
+          ctx.fill(); ctx.stroke();
+
+          // Hunched Jersey Torso
+          ctx.save();
+          ctx.translate(mx + 4, fy - 68 + heave * 0.6);
+          ctx.rotate(0.45);
+          ctx.fillStyle = '#facc15';
+          ctx.beginPath();
+          ctx.roundRect(-24, -56, 52, 58, 12);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 13px Bangers, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('LEGACY', 2, -32);
+          ctx.fillText('#1', 2, -16);
+          ctx.restore();
+
+          // Hands braced on knees
+          ctx.strokeStyle = '#000'; ctx.lineWidth = 11; ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(mx + 12, fy - 96 + heave); ctx.lineTo(mx + 18, fy - 44);
+          ctx.moveTo(mx - 8, fy - 96 + heave); ctx.lineTo(mx - 14, fy - 44);
+          ctx.stroke();
+          ctx.strokeStyle = '#f3c59f'; ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(mx + 12, fy - 96 + heave); ctx.lineTo(mx + 18, fy - 44);
+          ctx.moveTo(mx - 8, fy - 96 + heave); ctx.lineTo(mx - 14, fy - 44);
+          ctx.stroke();
+
+          const hx = mx + 26, hy = fy - 118 + heave * 1.25;
+          drawMikeArcadeHead(ctx, hx, hy, Math.min(34, W * 0.055), { exhausted: true, blush: 1, t: st.t });
+
+          // Sweat & Breath Clouds
+          ctx.fillStyle = '#38bdf8'; ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
+          st.sweat.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
+          st.breath.forEach(b => {
+            ctx.save(); ctx.globalAlpha = Math.max(0, b.life);
+            ctx.fillStyle = '#fff'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.restore();
+          });
+
+          drawComicSpeech(ctx, hx + 12, hy - 62, `${EXHAUST_CAPTIONS[st.captionIdx]} (${st.refillLeft.toFixed(1)}s)`);
+        } else {
+          // READY / CHARGING SHOT POSE
+          const bounce = st.charging ? Math.sin(st.t * 24) * 2 : Math.sin(st.t * 5) * 2.5;
+          ctx.fillStyle = '#f3c59f'; ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
+          ctx.fillRect(mx - 18, fy - 42, 13, 36); ctx.strokeRect(mx - 18, fy - 42, 13, 36);
+          ctx.fillRect(mx + 6, fy - 42, 13, 36); ctx.strokeRect(mx + 6, fy - 42, 13, 36);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.roundRect(mx - 22, fy - 10, 24, 12, 4);
+          ctx.roundRect(mx + 4, fy - 10, 24, 12, 4);
+          ctx.fill(); ctx.stroke();
+
+          ctx.fillStyle = '#1e3a8a';
+          ctx.beginPath();
+          ctx.roundRect(mx - 25, fy - 76, 50, 38, 8);
+          ctx.fill(); ctx.stroke();
+
+          ctx.fillStyle = '#facc15';
+          ctx.beginPath();
+          ctx.roundRect(mx - 26, fy - 134 + bounce, 52, 62, 10);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 14px Bangers, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('LEGACY', mx, fy - 106 + bounce);
+          ctx.fillText('#1', mx, fy - 88 + bounce);
+
+          const armLift = st.charging ? st.chargePower * 22 : 0;
+          ctx.strokeStyle = '#000'; ctx.lineWidth = 11; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(mx + 18, fy - 122 + bounce); ctx.lineTo(mx + 42, fy - 138 + bounce - armLift); ctx.stroke();
+          ctx.strokeStyle = '#f3c59f'; ctx.lineWidth = 6;
+          ctx.beginPath(); ctx.moveTo(mx + 18, fy - 122 + bounce); ctx.lineTo(mx + 42, fy - 138 + bounce - armLift); ctx.stroke();
+
+          if (!st.ball) drawBall(ctx, mx + 46, fy - 146 + bounce - armLift, 16, st.t * 2);
+
+          if (st.readyRing > 0) {
+            ctx.strokeStyle = `rgba(22, 163, 74, ${st.readyRing})`;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(mx, fy - 110, 68 + (1 - st.readyRing) * 35, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+
+          drawMikeArcadeHead(ctx, mx, fy - 166 + bounce, Math.min(34, W * 0.055), { exhausted: false, blush: 0.1, t: st.t });
+        }
+
+        // Shot Power Charge Bar (Vertical on Left)
+        const mX = Math.max(20, W * 0.06);
+        const mY = H * 0.24;
+        const mW = Math.min(30, W * 0.045);
+        const mH = H * 0.44;
+
+        ctx.save();
+        ctx.globalAlpha = exhausted ? 0.35 : 1.0;
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.roundRect(mX, mY, mW, mH, 8);
+        ctx.fill();
+
+        // Sweet spot green band (bottom = 0, top = 1)
+        const gBot = mY + (1 - st.sweetMin) * mH;
+        const gTop = mY + (1 - st.sweetMax) * mH;
+        ctx.fillStyle = '#16a34a';
+        ctx.fillRect(mX + 2, gTop, mW - 4, Math.max(6, gBot - gTop));
+
+        // Current Charge Fill
+        if (st.chargePower > 0) {
+          const fillH = st.chargePower * mH;
+          ctx.fillStyle = '#facc15';
+          ctx.fillRect(mX + 3, mY + mH - fillH, mW - 6, fillH);
+        }
+
+        ctx.strokeRect(mX, mY, mW, mH);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 12px Fredoka, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(exhausted ? 'TIRED' : 'POWER', mX + mW / 2, mY - 8);
+        ctx.restore();
+
+        if (st.ball) drawBall(ctx, st.ball.x, st.ball.y, 16, st.ball.rot);
+
+        st.popups.forEach(p => {
+          ctx.save();
+          ctx.globalAlpha = Math.min(1, p.life / (p.max * 0.5));
+          ctx.font = `bold ${Math.max(22, Math.round(W * 0.038))}px Bangers, sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 5;
+          ctx.strokeText(p.text, p.x, p.y);
+          ctx.fillStyle = p.color;
+          ctx.fillText(p.text, p.x, p.y);
+          ctx.restore();
+        });
+      }
+
+      function drawBall(ctx, x, y, r, rot) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rot);
+        ctx.fillStyle = '#ea580c';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(-r, 0); ctx.lineTo(r, 0);
+        ctx.moveTo(0, -r); ctx.lineTo(0, r);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawComicSpeech(ctx, x, y, text) {
+        ctx.save();
+        ctx.font = 'bold 13px Fredoka, sans-serif';
+        const bw = Math.min(W * 0.58, ctx.measureText(text).width + 24);
+        const bh = 30;
+        const bx = Math.max(8, Math.min(W - bw - 8, x - bw / 2));
+        const by = Math.max(10, y - bh / 2);
+
+        ctx.fillStyle = '#fffdf5';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.roundRect(bx, by, bw, bh, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(bx + 20, by + bh);
+        ctx.lineTo(bx + 12, by + bh + 9);
+        ctx.lineTo(bx + 30, by + bh);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, bx + bw / 2, by + bh / 2, bw - 12);
+        ctx.restore();
+      }
+
+      function loop(ts) {
+        if (!active) return;
+        const dt = Math.min(0.05, (ts - lastTs) / 1000 || 0.016);
+        lastTs = ts;
+        update(dt);
+        render();
+        rafId = requestAnimationFrame(loop);
+      }
+
+      canvas.addEventListener('pointerdown', (e) => {
+        if (st.phase === 'playing') { e.preventDefault(); beginCharge(); }
+      });
+      canvas.addEventListener('pointerup', (e) => {
+        if (st.phase === 'playing') { e.preventDefault(); releaseShot(); }
+      });
+
+      return {
+        start,
+        beginCharge,
+        releaseShot,
+        cancelCharge,
+        resize,
+        isPlaying: () => active && st.phase === 'playing',
+        setActive(flag) {
+          active = flag;
+          if (active) {
+            resize();
+            lastTs = performance.now();
+            if (!rafId) rafId = requestAnimationFrame(loop);
+          } else if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+          }
+        }
+      };
+    })();
+
+    /* ========================================================================
+       9. GAME 2: MIKE IS THE GOAT (SLOW, READABLE SHAMELESSLY FUNNY COMPLIMENTS!)
+    ========================================================================= */
+    const GoatGame = (() => {
+      const canvas = document.getElementById('goat-canvas');
+      const ctx = canvas.getContext('2d');
+      let W = 800, H = 500;
+      let active = false;
+      let rafId = null;
+      let lastTs = 0;
+
+      const GAME_DURATION = 50.0;
+
+      // Shamelessly funny compliments that float slowly upward so players can read every word!
+      const SHAMELESS_COMPLIMENTS = [
+        "YOUR WAIVER WIRE MOVES DESERVE A NOBEL PRIZE!",
+        "YOU ONLY LOST BECAUSE MERCURY WAS IN RETROGRADE!",
+        "MATTHEW BERRY CALLS YOU FOR ADVICE!",
+        "THAT 2019 CHAMPIONSHIP STILL COUNTS AS A DYNASTY!",
+        "YOUR BENCH POINTS ARE ELITE!",
+        "EVERY TRADE YOU OFFER IS COMPLETELY FAIR!",
+        "YOU DRAFTED LIKE A PURE GENIUS!"
+      ];
+
+      const HECKLER_SIGNS = [
+        { label: 'REALITY CHECK!', color: '#dc2626' },
+        { label: '4-6 RECORD!', color: '#1e3a8a' },
+        { label: 'CHECK THE STANDINGS!', color: '#16a34a' }
+      ];
+
+      const keys = { left: false, right: false };
+      let touchDir = 0;
+
+      let st = {
+        phase: 'idle', // 'idle' | 'playing' | 'exploded' | 'lost'
+        timeLeft: GAME_DURATION,
+        elapsed: 0,
+        ego: 0,
+        yells: 0,
+        kyleX: 0.5,
+        yellAnim: 0,
+        cooldown: 0,
+        headScale: 1.0,
+        headVel: 0,
+        banners: [], // Slow-floating readable compliment banners
+        hypeZone: { x: 0.35, dir: 1, speed: 0.16, width: 0.21 },
+        hecklers: [], // Moving Reality Check / 4-6 Record signs
+        hecklerSpawn: 2.2,
+        confetti: [],
+        shake: 0,
+        flash: 0,
+        compIdx: 0,
+        t: 0
+      };
+
+      function resize() {
+        const stage = document.getElementById('goat-stage');
+        if (!stage) return;
+        const rect = stage.getBoundingClientRect();
+        if (rect.width < 10 || rect.height < 10) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = rect.width;
+        H = rect.height;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        render();
+      }
+
+      function start() {
+        SoundFX.click();
+        st = {
+          phase: 'playing',
+          timeLeft: GAME_DURATION,
+          elapsed: 0,
+          ego: 0,
+          yells: 0,
+          kyleX: 0.5,
+          yellAnim: 0,
+          cooldown: 0,
+          headScale: 1.0,
+          headVel: 0,
+          banners: [],
+          hypeZone: { x: 0.28 + Math.random() * 0.44, dir: 1, speed: 0.16, width: 0.21 },
+          hecklers: [],
+          hecklerSpawn: 2.0,
+          confetti: [],
+          shake: 0,
+          flash: 0,
+          compIdx: 0,
+          t: 0
+        };
+        document.getElementById('goat-overlay').classList.add('hidden');
+        updateUI();
+      }
+
+      function yellCompliment() {
+        if (st.phase !== 'playing') return;
+        if (st.cooldown > 0) return;
+
+        st.cooldown = 0.32;
+        st.yellAnim = 0.30;
+        st.yells++;
+
+        const inHype = Math.abs(st.kyleX - st.hypeZone.x) <= st.hypeZone.width * 0.55;
+        const swellGain = inHype ? 16 : 9;
+
+        SoundFX.yell(inHype);
+        const phrase = SHAMELESS_COMPLIMENTS[st.compIdx % SHAMELESS_COMPLIMENTS.length];
+        st.compIdx++;
+
+        // Slow upward float speed (~135 px/sec) so players can clearly read each funny banner!
+        st.banners.push({
+          x: st.kyleX * W,
+          y: H * 0.72,
+          vy: -Math.max(115, H * 0.26),
+          text: inHype ? `⭐ 2X! ${phrase}` : phrase,
+          isSuper: inHype,
+          gain: swellGain
+        });
+      }
+
+      function triggerHeadExplosion() {
+        st.phase = 'exploded';
+        st.ego = 100;
+        st.shake = 1.25;
+        st.flash = 1.0;
+        SoundFX.explode();
+
+        const icons = ['🐐', '🏆', '⭐', '💥', '👑', '🎊', '🕶️'];
+        const palette = ['#facc15', '#dc2626', '#16a34a', '#3b82f6', '#ffffff'];
+        st.confetti = [];
+        for (let i = 0; i < 85; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          const spd = 120 + Math.random() * 380;
+          st.confetti.push({
+            x: W * 0.5,
+            y: H * 0.40,
+            vx: Math.cos(ang) * spd,
+            vy: Math.sin(ang) * spd - 120,
+            rot: Math.random() * Math.PI * 2,
+            vrot: (Math.random() - 0.5) * 10,
+            color: palette[i % palette.length],
+            icon: i % 3 === 0 ? icons[i % icons.length] : null,
+            size: 9 + Math.random() * 11,
+            life: 2.8 + Math.random() * 1.2
+          });
+        }
+
+        updateUI();
+
+        setTimeout(() => {
+          if (st.phase !== 'exploded') return;
+          const ov = document.getElementById('goat-overlay');
+          const badge = document.getElementById('goat-ov-badge');
+          badge.textContent = '💥 100% EGO OVERLOAD!!';
+          badge.className = 'inline-block bg-turf text-white font-bold text-xs uppercase px-3 py-1 rounded-full border-2 border-black';
+          document.getElementById('goat-ov-title').textContent = 'POP!! MIKE\'S HEAD EXPLODED!';
+          document.getElementById('goat-ov-desc').textContent = `Kyle's shameless compliments inflated Mike's head to critical capacity in ${st.elapsed.toFixed(1)}s! Confetti, goats, and trophies everywhere!`;
+          document.getElementById('goat-ov-stats').classList.remove('hidden');
+          document.getElementById('goat-st-ego').textContent = '100% 💥';
+          document.getElementById('goat-st-time').textContent = `${st.elapsed.toFixed(1)}s`;
+          document.getElementById('goat-st-yells').textContent = `${st.yells}`;
+          ov.classList.remove('hidden');
+        }, 2100);
+      }
+
+      function triggerTimeout() {
+        st.phase = 'lost';
+        SoundFX.buzzer();
+        const ov = document.getElementById('goat-overlay');
+        const badge = document.getElementById('goat-ov-badge');
+        badge.textContent = '⏰ CARNIVAL BELL';
+        badge.className = 'inline-block bg-crimson text-white font-bold text-xs uppercase px-3 py-1 rounded-full border-2 border-black';
+        document.getElementById('goat-ov-title').textContent = 'SO CLOSE TO POPPING!';
+        document.getElementById('goat-ov-desc').textContent = `You reached ${Math.round(st.ego)}% Ego Swell! Aim through the Golden 2x Hype Zones and avoid Reality Check signs!`;
+        document.getElementById('goat-ov-stats').classList.remove('hidden');
+        document.getElementById('goat-st-ego').textContent = `${Math.round(st.ego)}%`;
+        document.getElementById('goat-st-time').textContent = '50.0s';
+        document.getElementById('goat-st-yells').textContent = `${st.yells}`;
+        ov.classList.remove('hidden');
+      }
+
+      function updateUI() {
+        const pct = Math.round(st.ego);
+        document.getElementById('goat-ego-txt').textContent = `${pct}%`;
+        document.getElementById('goat-time-txt').textContent = `${Math.max(0, st.timeLeft).toFixed(1)}s`;
+        document.getElementById('goat-yells-txt').textContent = `${st.yells}`;
+        document.getElementById('goat-ego-bar').style.width = `${Math.min(100, pct)}%`;
+
+        const status = document.getElementById('goat-status-txt');
+        if (pct >= 100) {
+          status.textContent = '💥 POP!! EGO OVERLOAD!! (100%)';
+          status.className = 'text-turf font-extrabold';
+        } else if (pct >= 80) {
+          status.textContent = `🚨 DANGER: HEAD ABOUT TO POP!! (${pct}%)`;
+          status.className = 'text-crimson font-extrabold animate-pulse';
+        } else if (pct >= 50) {
+          status.textContent = `🎈 SWELLING MASSIVELY! (${pct}%)`;
+          status.className = 'text-orange-600 font-extrabold';
+        } else if (pct >= 25) {
+          status.textContent = `😏 PUFFING WITH PRIDE (${pct}%)`;
+          status.className = 'text-amber-600 font-extrabold';
+        } else {
+          status.textContent = `🙂 MILDLY COCKY (${pct}%)`;
+          status.className = 'text-electricNavy font-extrabold';
+        }
+      }
+
+      function update(dt) {
+        st.t += dt;
+        if (st.shake > 0) st.shake = Math.max(0, st.shake - dt * 1.4);
+        if (st.flash > 0) st.flash = Math.max(0, st.flash - dt * 2.2);
+        if (st.yellAnim > 0) st.yellAnim = Math.max(0, st.yellAnim - dt);
+        if (st.cooldown > 0) st.cooldown = Math.max(0, st.cooldown - dt);
+
+        st.confetti = st.confetti.filter(c => {
+          c.x += c.vx * dt;
+          c.y += c.vy * dt;
+          c.vy += 420 * dt;
+          c.rot += c.vrot * dt;
+          c.life -= dt;
+          return c.life > 0;
+        });
+
+        if (st.phase !== 'playing') return;
+
+        st.timeLeft -= dt;
+        st.elapsed += dt;
+        if (st.timeLeft <= 0) {
+          st.timeLeft = 0;
+          updateUI();
+          triggerTimeout();
+          return;
+        }
+
+        // Move Kyle left/right
+        let dir = touchDir;
+        if (keys.left) dir -= 1;
+        if (keys.right) dir += 1;
+        if (dir !== 0) {
+          st.kyleX = Math.max(0.11, Math.min(0.89, st.kyleX + dir * 0.65 * dt));
+        }
+
+        // Drift Golden 2x Hype Zone
+        st.hypeZone.x += st.hypeZone.dir * st.hypeZone.speed * dt;
+        if (st.hypeZone.x > 0.82) { st.hypeZone.x = 0.82; st.hypeZone.dir = -1; }
+        if (st.hypeZone.x < 0.18) { st.hypeZone.x = 0.18; st.hypeZone.dir = 1; }
+
+        // Spawn floating Reality Check / 4-6 Record heckler signs
+        st.hecklerSpawn -= dt;
+        if (st.hecklerSpawn <= 0) {
+          const fromLeft = Math.random() < 0.5;
+          const pick = HECKLER_SIGNS[Math.floor(Math.random() * HECKLER_SIGNS.length)];
+          st.hecklers.push({
+            x: fromLeft ? -70 : W + 70,
+            y: H * (0.48 + Math.random() * 0.14),
+            vx: fromLeft ? (95 + Math.random() * 45) : -(95 + Math.random() * 45),
+            label: pick.label,
+            color: pick.color
+          });
+          st.hecklerSpawn = 3.2 + Math.random() * 2.0;
+        }
+
+        st.hecklers = st.hecklers.filter(h => {
+          h.x += h.vx * dt;
+          return h.x > -120 && h.x < W + 120;
+        });
+
+        // Gentle ego leak so player keeps hyping
+        if (st.ego > 0) {
+          st.ego = Math.max(0, st.ego - (1.8 + (st.ego / 100) * 2.4) * dt);
+        }
+
+        // Spring physics for Mike's swelling head (1.0x -> 3.8x)
+        const targetScale = 1.0 + (st.ego / 100) * 2.8;
+        const spring = (targetScale - st.headScale) * 26;
+        st.headVel = (st.headVel + spring * dt) * Math.pow(0.08, dt);
+        st.headScale += st.headVel * dt;
+
+        // Move slow-floating compliment banners upward & check collisions
+        const baseR = Math.min(26, W * 0.043);
+        const headR = baseR * st.headScale;
+        const headCenterY = H * 0.64 - 44 - headR * 0.9;
+
+        st.banners = st.banners.filter(b => {
+          b.y += b.vy * dt;
+          // Gently steer horizontally toward Mike's head
+          b.x += ((W * 0.5) - b.x) * 1.1 * dt;
+
+          // Check if blocked by a floating Reality Check sign
+          const hitHeckler = st.hecklers.find(h => Math.abs(b.x - h.x) < 72 && Math.abs(b.y - h.y) < 22);
+          if (hitHeckler) {
+            SoundFX.heckle();
+            return false;
+          }
+
+          // Check if reached Mike's swelling head
+          if (b.y <= headCenterY + headR * 0.55) {
+            st.ego = Math.min(100, st.ego + b.gain);
+            st.headVel += b.isSuper ? 2.6 : 1.5;
+            SoundFX.swell(st.ego / 100);
+            if (st.ego >= 100) triggerHeadExplosion();
+            return false;
+          }
+
+          return b.y > -40;
+        });
+
+        updateUI();
+      }
+
+      function render() {
+        ctx.save();
+        if (st.shake > 0) {
+          const m = st.shake * 11;
+          ctx.translate((Math.random() - 0.5) * m, (Math.random() - 0.5) * m);
+        }
+        ctx.clearRect(-20, -20, W + 40, H + 40);
+
+        // 1. Vibrant Carnival Midway Backdrop
+        const bg = ctx.createRadialGradient(W * 0.5, H * 0.44, 20, W * 0.5, H * 0.5, W * 0.78);
+        bg.addColorStop(0, '#1e3a8a');
+        bg.addColorStop(0.6, '#172554');
+        bg.addColorStop(1, '#090d16');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // Sunburst carnival rays
+        ctx.save();
+        ctx.translate(W * 0.5, H * 0.44);
+        ctx.rotate(st.t * 0.16);
+        ctx.fillStyle = 'rgba(250, 204, 21, 0.10)';
+        for (let i = 0; i < 12; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.arc(0, 0, W * 0.85, (i * Math.PI) / 6, (i * Math.PI) / 6 + 0.22);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // 2. Striped Red-and-Cream Carnival Awning & Marquee
+        const stripes = 12;
+        const sw = W / stripes;
+        const awH = H * 0.13;
+        for (let i = 0; i < stripes; i++) {
+          ctx.fillStyle = i % 2 === 0 ? '#dc2626' : '#fef9e7';
+          ctx.fillRect(i * sw, 0, sw + 1, awH);
+          ctx.beginPath();
+          ctx.arc(i * sw + sw / 2, awH, sw / 2, 0, Math.PI);
+          ctx.fill();
+        }
+
+        const signW = Math.min(W * 0.66, 400);
+        const signH = Math.max(36, H * 0.095);
+        const signX = (W - signW) / 2;
+        const signY = 8;
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = '#facc15';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.roundRect(signX, signY, signW, signH, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = st.ego >= 80 && Math.floor(st.t * 10) % 2 === 0 ? '#dc2626' : '#facc15';
+        ctx.font = `bold ${Math.max(18, Math.round(signH * 0.68))}px Bangers, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(st.ego >= 80 && st.phase === 'playing' ? '🚨 EGO CRITICAL — ONE MORE COMPLIMENT! 🚨' : '🐐 MIKE IS THE GOAT! 🐐', W * 0.5, signY + signH / 2 + 1);
+
+        // 3. Center Carnival Chair & MIKE (Swelling Head!)
+        const cx = W * 0.5;
+        const seatY = H * 0.64;
+
+        // Carnival Chair
+        ctx.fillStyle = '#dc2626';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.roundRect(cx - 46, seatY - 38, 92, 42, 10);
+        ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = '#facc15';
+        ctx.fillRect(cx - 52, seatY, 104, 14);
+        ctx.strokeRect(cx - 52, seatY, 104, 14);
+
+        // Mike's Body (Navy & Crimson Legacy Hoodie)
+        ctx.fillStyle = '#1e3a8a';
+        ctx.beginPath();
+        ctx.roundRect(cx - 20, seatY - 44, 40, 42, 8);
+        ctx.fill(); ctx.stroke();
+
+        const baseR = Math.min(26, W * 0.043);
+        if (st.phase === 'exploded') {
+          const tinyR = baseR * 0.72;
+          const hy = seatY - 50 - tinyR;
+          drawMikeArcadeHead(ctx, cx, hy, tinyR, { dizzy: true, t: st.t });
+
+          ctx.save();
+          ctx.font = `bold ${Math.max(40, Math.round(W * 0.08))}px Bangers, sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 7;
+          ctx.strokeText('POP!! EGO OVERLOAD!', W * 0.5, H * 0.30);
+          ctx.fillStyle = '#facc15';
+          ctx.fillText('POP!! EGO OVERLOAD!', W * 0.5, H * 0.30);
+          ctx.restore();
+        } else {
+          const headR = baseR * st.headScale;
+          const wobble = st.ego > 65 ? ((st.ego - 65) / 35) * 9 : 0;
+          const wx = Math.sin(st.t * 48) * wobble;
+          const wy = Math.cos(st.t * 42) * wobble * 0.6;
+          const hy = seatY - 44 - headR * 0.9 + wy;
+
+          drawMikeArcadeHead(ctx, cx + wx, hy, headR, {
+            egoRatio: st.ego / 100,
+            blush: st.ego / 100,
+            t: st.t
+          });
+        }
+
+        // 4. Floating "REALITY CHECK" / "4-6 RECORD" Heckler Signs
+        st.hecklers.forEach(h => {
+          ctx.save();
+          ctx.fillStyle = h.color;
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.roundRect(h.x - 64, h.y - 16, 128, 32, 8);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 13px Bangers, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`🚫 ${h.label}`, h.x, h.y + 1);
+          ctx.restore();
+        });
+
+        // 5. Drifting Golden 2x Hype Zone
+        if (st.phase === 'playing') {
+          const hzX = st.hypeZone.x * W;
+          const hzW = st.hypeZone.width * W;
+          const pulse = 0.5 + 0.5 * Math.sin(st.t * 8);
+
+          const beam = ctx.createLinearGradient(0, H * 0.54, 0, H * 0.84);
+          beam.addColorStop(0, `rgba(250, 204, 21, ${0.10 + pulse * 0.12})`);
+          beam.addColorStop(1, `rgba(250, 204, 21, ${0.34 + pulse * 0.15})`);
+          ctx.fillStyle = beam;
+          ctx.fillRect(hzX - hzW / 2, H * 0.55, hzW, H * 0.28);
+
+          ctx.fillStyle = '#facc15';
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.roundRect(hzX - 54, H * 0.54, 108, 24, 12);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#000';
+          ctx.font = 'bold 11px Fredoka, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('⭐ 2X HYPE ZONE', hzX, H * 0.54 + 16);
+        }
+
+        // 6. Carnival Booth Counter
+        const counterY = H * 0.78;
+        ctx.fillStyle = '#92400e';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 4;
+        ctx.fillRect(0, counterY, W, H - counterY);
+        ctx.beginPath(); ctx.moveTo(0, counterY); ctx.lineTo(W, counterY); ctx.stroke();
+
+        // 7. Player-Controlled KYLE (Grey Tee, Golden Horseshoe & Megaphone)
+        const kx = st.kyleX * W;
+        const ky = counterY + 12;
+        const yelling = st.yellAnim > 0 || st.phase === 'exploded';
+
+        // Kyle's Grey Tee
+        ctx.fillStyle = '#4b5563';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.roundRect(kx - 24, ky - 14, 48, 44, 10);
+        ctx.fill(); ctx.stroke();
+
+        // Golden Horseshoe in Kyle's left hand
+        ctx.strokeStyle = '#facc15';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(kx - 26, ky - 6, 11, 0, Math.PI);
+        ctx.stroke();
+
+        // Kyle's Head
+        drawKyleArcadeHead(ctx, kx, ky - 34, Math.min(25, W * 0.042), yelling);
+
+        // Carnival Megaphone angled at Mike
+        ctx.save();
+        ctx.translate(kx + 20, ky - 26);
+        const ang = Math.atan2((H * 0.40) - (ky - 26), (W * 0.5) - (kx + 20));
+        ctx.rotate(ang + (yelling ? -0.14 : 0));
+        ctx.fillStyle = '#dc2626';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(0, -6);
+        ctx.lineTo(34, -18);
+        ctx.lineTo(34, 18);
+        ctx.lineTo(0, 6);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#facc15';
+        ctx.fillRect(30, -18, 6, 36);
+        ctx.strokeRect(30, -18, 6, 36);
+        ctx.restore();
+
+        // 8. Slow-Floating Readable Compliment Banners
+        st.banners.forEach(b => {
+          ctx.save();
+          ctx.font = `bold ${b.isSuper ? 14 : 13}px Fredoka, sans-serif`;
+          const maxW = W * 0.78;
+          const tw = Math.min(maxW, ctx.measureText(b.text).width + 26);
+          const th = 32;
+          const drawX = Math.max(tw / 2 + 8, Math.min(W - tw / 2 - 8, b.x));
+
+          ctx.fillStyle = b.isSuper ? '#facc15' : '#fffdf5';
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.roundRect(drawX - tw / 2, b.y - th / 2, tw, th, 12);
+          ctx.fill(); ctx.stroke();
+
+          ctx.fillStyle = '#000';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(b.text, drawX, b.y + 1, tw - 14);
+          ctx.restore();
+        });
+
+        // 9. Explosion Confetti, Trophies & Goats
+        st.confetti.forEach(c => {
+          ctx.save();
+          ctx.translate(c.x, c.y);
+          ctx.rotate(c.rot);
+          ctx.globalAlpha = Math.min(1, c.life);
+          if (c.icon) {
+            ctx.font = `${Math.round(c.size * 1.6)}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(c.icon, 0, 0);
+          } else {
+            ctx.fillStyle = c.color;
+            ctx.fillRect(-c.size / 2, -c.size / 3, c.size, c.size * 0.66);
+          }
+          ctx.restore();
+        });
+
+        if (st.flash > 0) {
+          ctx.fillStyle = `rgba(255, 255, 255, ${st.flash * 0.75})`;
+          ctx.fillRect(0, 0, W, H);
+        }
+
+        ctx.restore();
+      }
+
+      function loop(ts) {
+        if (!active) return;
+        const dt = Math.min(0.05, (ts - lastTs) / 1000 || 0.016);
+        lastTs = ts;
+        update(dt);
+        render();
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function movePointer(clientX) {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width) return;
+        st.kyleX = Math.max(0.11, Math.min(0.89, (clientX - rect.left) / rect.width));
+      }
+
+      canvas.addEventListener('pointermove', (e) => {
+        if (st.phase === 'playing') movePointer(e.clientX);
+      });
+      canvas.addEventListener('pointerdown', (e) => {
+        if (st.phase === 'playing') {
+          e.preventDefault();
+          movePointer(e.clientX);
+          yellCompliment();
+        }
+      });
+
+      return {
+        start,
+        yellCompliment,
+        resize,
+        isPlaying: () => active && st.phase === 'playing',
+        setKey(dir, down) { keys[dir] = down; },
+        setTouchMove(dir) { touchDir = dir; },
+        setActive(flag) {
+          active = flag;
+          if (active) {
+            resize();
+            lastTs = performance.now();
+            if (!rafId) rafId = requestAnimationFrame(loop);
+          } else if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+          }
+        }
+      };
+    })();
+
+    /* ========================================================================
+       10. KEYBOARD & RESIZE LISTENERS
+    ========================================================================= */
+    window.addEventListener('keydown', (e) => {
+      if (currentTab !== 'arcade') return;
+
+      if (e.code === 'Space') {
+        if (currentArcade === 'basketball' && BasketballGame.isPlaying()) {
+          e.preventDefault();
+          if (!e.repeat) BasketballGame.beginCharge();
+        } else if (currentArcade === 'goat' && GoatGame.isPlaying()) {
+          e.preventDefault();
+          GoatGame.yellCompliment();
+        }
+      }
+
+      if (currentArcade === 'goat') {
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+          if (GoatGame.isPlaying()) e.preventDefault();
+          GoatGame.setKey('left', true);
+        }
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+          if (GoatGame.isPlaying()) e.preventDefault();
+          GoatGame.setKey('right', true);
+        }
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' && currentTab === 'arcade' && currentArcade === 'basketball') {
+        BasketballGame.releaseShot();
+      }
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') GoatGame.setKey('left', false);
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') GoatGame.setKey('right', false);
+    });
+
+    window.addEventListener('resize', () => {
+      if (currentTab === 'arcade') {
+        if (currentArcade === 'basketball') BasketballGame.resize();
+        else GoatGame.resize();
+      }
+    });
+
+    /* ========================================================================
+       11. BOOTSTRAP ON LOAD
+    ========================================================================= */
+    window.addEventListener('load', () => {
+      fetchSleeperData(false);
+    });
+  </script>
+</body>
+</html>
