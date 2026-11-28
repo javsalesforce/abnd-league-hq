@@ -337,7 +337,208 @@
           </div>
         </div>
       </div>
+<!-- === SETH'S WAIVER WIRE FREEZE ARCADE GAME === -->
+<div id="seth-arcade-card" class="bg-slate-900 border-4 border-yellow-400 rounded-2xl p-5 shadow-xl text-white my-4">
+  <div class="flex items-center justify-between mb-2">
+    <span class="bg-red-600 text-white text-xs font-extrabold px-2.5 py-1 rounded uppercase tracking-wider">New Cabinet</span>
+    <span class="text-yellow-400 text-xs font-bold">STARRING SETH</span>
+  </div>
+  <h3 class="text-2xl font-black text-yellow-400 tracking-wide uppercase mb-1" style="font-family: 'Bangers', cursive; letter-spacing: 1.5px;">
+    ❄️ Seth's Waiver Wire Freeze
+  </h3>
+  <p class="text-sm text-slate-300 mb-4">
+    25+ PPG studs are sitting on waivers, and Seth won't let go of his Week 1 sleepers! Tap fast to convince him to make a drop before he overthinks and grabs a backup kicker.
+  </p>
+  <button onclick="openSethGame()" class="w-full bg-yellow-400 hover:bg-yellow-300 active:scale-95 transition text-slate-950 font-black py-3 px-4 rounded-xl text-lg uppercase tracking-wider shadow-md cursor-pointer">
+    🧊 Play Waiver Wire Freeze
+  </button>
+</div>
 
+<!-- FULLSCREEN ARCADE MODAL -->
+<div id="seth-game-modal" class="fixed inset-0 z-50 hidden bg-slate-950/95 flex flex-col items-center justify-center p-4 text-white select-none">
+  <div class="w-full max-w-md bg-slate-900 border-4 border-yellow-400 rounded-2xl p-4 shadow-2xl relative">
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center border-b-2 border-slate-700 pb-2 mb-3">
+      <div>
+        <div class="text-xs text-slate-400 uppercase font-bold">Score</div>
+        <div id="seth-score" class="text-2xl font-black text-yellow-400">0</div>
+      </div>
+      <div class="text-center">
+        <div class="text-xs text-slate-400 uppercase font-bold">Time</div>
+        <div id="seth-timer" class="text-2xl font-black text-white">30s</div>
+      </div>
+      <button onclick="closeSethGame()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-1.5 rounded-lg text-sm">
+        ✕ Exit
+      </button>
+    </div>
+
+    <!-- Waiver Wire Incoming Drop -->
+    <div id="seth-waiver-box" class="bg-slate-800 border-2 border-emerald-400 rounded-xl p-3 text-center mb-3 transition-all">
+      <div class="text-xs uppercase tracking-wider text-emerald-300 font-bold mb-1">🔥 Available on Waivers</div>
+      <div id="seth-waiver-player" class="text-xl font-black text-white">28.4 PPG Stud WR1</div>
+      <div id="seth-waiver-sub" class="text-xs text-emerald-400 font-semibold mt-0.5">+500 PTS if you make room!</div>
+    </div>
+
+    <!-- Seth's Thought Bubble / Freeze Meter -->
+    <div class="bg-slate-950 border border-slate-700 rounded-xl p-2.5 mb-3 text-center">
+      <div id="seth-bubble" class="text-sm font-bold text-yellow-300 italic">
+        "Hold on... what if my bench guy breaks out in Week 15?!"
+      </div>
+      <div class="w-full bg-slate-800 h-3 rounded-full mt-2 overflow-hidden border border-slate-600">
+        <div id="seth-freeze-bar" class="bg-cyan-400 h-full transition-all duration-100" style="width: 0%;"></div>
+      </div>
+      <div class="text-[11px] text-cyan-300 uppercase font-bold mt-1">Overthink Freeze Meter</div>
+    </div>
+
+    <!-- Seth's Bench (Tap 3x to Drop) -->
+    <div class="mb-2">
+      <div class="text-xs uppercase text-slate-400 font-bold mb-1.5 flex justify-between">
+        <span>Seth's Beloved Bench</span>
+        <span id="seth-taps-left" class="text-yellow-400">Tap 3x to Drop!</span>
+      </div>
+      <button id="seth-bench-btn" onclick="tapBenchDrop()" class="w-full bg-slate-800 hover:bg-slate-700 active:scale-95 transition border-2 border-slate-600 rounded-xl p-3.5 text-left flex items-center justify-between">
+        <div>
+          <div id="seth-bench-name" class="font-black text-base text-white">Week 1 Waiver Fluke (WR5)</div>
+          <div id="seth-bench-proj" class="text-xs text-slate-400">Proj: 2.1 pts • "High upside stash"</div>
+        </div>
+        <span id="seth-lock-badge" class="bg-amber-500 text-slate-950 font-black text-xs px-2.5 py-1.5 rounded-lg">
+          🔒 3 TAPS
+        </span>
+      </button>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="seth-gameover" class="hidden absolute inset-0 bg-slate-950/95 rounded-2xl flex flex-col items-center justify-center p-6 text-center">
+      <div class="text-4xl mb-2">🧊</div>
+      <h4 class="text-3xl font-black text-yellow-400 uppercase mb-1" style="font-family: 'Bangers', cursive;">Waivers Processed!</h4>
+      <p id="seth-final-score" class="text-xl font-bold text-white mb-2">Final Score: 0</p>
+      <p id="seth-rank-text" class="text-sm text-cyan-300 font-semibold bg-slate-900 border border-slate-700 rounded-xl p-3 mb-5">
+        Rank: Kept a Questionable 3rd-String TE
+      </p>
+      <div class="flex gap-3 w-full">
+        <button onclick="startSethGame()" class="flex-1 bg-yellow-400 text-slate-950 font-black py-3 rounded-xl uppercase">Play Again</button>
+        <button onclick="closeSethGame()" class="flex-1 bg-slate-800 text-white font-bold py-3 rounded-xl uppercase">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const sethStuds = [
+    { name: "28.4 PPG Stud WR1", sub: "+500 PTS • League Winner", pts: 500, good: true },
+    { name: "Bellcow RB1 (22 Carries/Gm)", sub: "+500 PTS • Smash Claim", pts: 500, good: true },
+    { name: "Breakout Rookie TE1", sub: "+400 PTS • Top 3 Positional Edge", pts: 400, good: true },
+    { name: "Backup Kicker (Bye Week)", sub: "-300 PTS • Don't drop a stud for this!", pts: -300, good: false },
+    { name: "3rd-String Fullback (0 Targets)", sub: "-300 PTS • Classic Tuesday Panic", pts: -300, good: false }
+  ];
+
+  const sethBench = [
+    { name: "Week 1 Waiver Fluke (WR5)", proj: "Proj: 2.1 pts • 'He ran good routes in preseason'" },
+    { name: "Hamstring 'Day-to-Day' Since Sept", proj: "Proj: 0.0 pts • 'Worth holding for playoffs'" },
+    { name: "7th-Round Sleeper Pick", proj: "Proj: 3.4 pts • 'Sunk cost fallacy special'" },
+    { name: "Committee RB4 (4 Snaps/Gm)", proj: "Proj: 1.8 pts • 'One injury away!'" }
+  ];
+
+  const sethExcuses = [
+    '"Hold on... what if he gets 3 targets in Week 16?!"',
+    '"I spent $4 FAAB on him in September, I can\'t drop him now!"',
+    '"Wait let me check his snap share from 2024 first..."',
+    '"What if someone else in ABND picks him up?!"'
+  ];
+
+  let sethScore = 0, sethTime = 30, sethFreeze = 0, sethTaps = 3, sethCurrentWaiver = null, sethInterval = null;
+
+  function openSethGame() {
+    document.getElementById('seth-game-modal').classList.remove('hidden');
+    startSethGame();
+  }
+
+  function closeSethGame() {
+    clearInterval(sethInterval);
+    document.getElementById('seth-game-modal').classList.add('hidden');
+  }
+
+  function startSethGame() {
+    sethScore = 0;
+    sethTime = 30;
+    sethFreeze = 0;
+    document.getElementById('seth-score').innerText = sethScore;
+    document.getElementById('seth-timer').innerText = sethTime + 's';
+    document.getElementById('seth-gameover').classList.add('hidden');
+    nextWaiverRound();
+
+    clearInterval(sethInterval);
+    sethInterval = setInterval(() => {
+      sethTime -= 0.1;
+      sethFreeze += 3.5; // Overthinking builds up
+      if (sethFreeze >= 100) {
+        // Seth froze and missed the stud / grabbed a dud
+        sethFreeze = 0;
+        if (sethCurrentWaiver.good) {
+          document.getElementById('seth-bubble').innerText = '🥶 FROZE! Missed the stud and kept the stash!';
+        } else {
+          sethScore = Math.max(0, sethScore - 200);
+          document.getElementById('seth-score').innerText = sethScore;
+          document.getElementById('seth-bubble').innerText = '😱 PANIC CLAIM! Grabbed a backup kicker!';
+        }
+        nextWaiverRound();
+      }
+      document.getElementById('seth-freeze-bar').style.width = Math.min(100, sethFreeze) + '%';
+      document.getElementById('seth-timer').innerText = Math.max(0, Math.ceil(sethTime)) + 's';
+
+      if (sethTime <= 0) endSethGame();
+    }, 100);
+  }
+
+  function nextWaiverRound() {
+    sethTaps = 3;
+    sethFreeze = 0;
+    sethCurrentWaiver = sethStuds[Math.floor(Math.random() * sethStuds.length)];
+    const benchItem = sethBench[Math.floor(Math.random() * sethBench.length)];
+
+    const box = document.getElementById('seth-waiver-box');
+    box.className = sethCurrentWaiver.good
+      ? 'bg-slate-800 border-2 border-emerald-400 rounded-xl p-3 text-center mb-3 transition-all'
+      : 'bg-slate-800 border-2 border-red-500 rounded-xl p-3 text-center mb-3 transition-all';
+
+    document.getElementById('seth-waiver-player').innerText = sethCurrentWaiver.name;
+    document.getElementById('seth-waiver-sub').innerText = sethCurrentWaiver.sub;
+    document.getElementById('seth-bench-name').innerText = benchItem.name;
+    document.getElementById('seth-bench-proj').innerText = benchItem.proj;
+    updateTapBadge();
+  }
+
+  function tapBenchDrop() {
+    sethTaps--;
+    document.getElementById('seth-bubble').innerText = sethExcuses[Math.floor(Math.random() * sethExcuses.length)];
+    if (sethTaps <= 0) {
+      sethScore = Math.max(0, sethScore + sethCurrentWaiver.pts);
+      document.getElementById('seth-score').innerText = sethScore;
+      document.getElementById('seth-bubble').innerText = sethCurrentWaiver.good
+        ? '✅ HE ACTUALLY MADE A DROP! +500 PTS!'
+        : '😬 Oof! Dropped a bench guy for waiver trash!';
+      nextWaiverRound();
+    } else {
+      updateTapBadge();
+    }
+  }
+
+  function updateTapBadge() {
+    document.getElementById('seth-lock-badge').innerText = `🔒 ${sethTaps} TAP${sethTaps > 1 ? 'S' : ''}`;
+  }
+
+  function endSethGame() {
+    clearInterval(sethInterval);
+    document.getElementById('seth-final-score').innerText = `Final Score: ${sethScore}`;
+    let rank = "Married to a Week 1 Waiver Fluke";
+    if (sethScore >= 2500) rank = "Certified Waiver Wire Shark";
+    else if (sethScore >= 1200) rank = "Actually Clicked 'Confirm Drop'!";
+    else if (sethScore >= 400) rank = "Cancelled Claim at 11:59 PM";
+    document.getElementById('seth-rank-text').innerText = `Rank: ${rank}`;
+    document.getElementById('seth-gameover').classList.remove('hidden');
+  }
+</script>
+<!-- === END SETH'S WAIVER WIRE FREEZE === -->
       <!-- Standings & Matchup Scoreboard -->
       <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         <!-- Standings Table -->
